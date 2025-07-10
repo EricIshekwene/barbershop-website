@@ -4,7 +4,7 @@ import { FaTiktok } from "react-icons/fa";
 
 function HomeCard() {
   return (
-    <div className="w-2/7 h-[65vh] min-w-[300px] mx-auto mt-12 bg-black rounded-xl shadow-lg overflow-hidden">
+    <div className="w-1/3 h-[65vh] min-w-[300px] mx-auto mt-12 bg-black rounded-xl shadow-lg overflow-hidden">
       {/* Content */}
       <div className="flex flex-col items-center justify-center text-center px-6 py-12 h-full gap-5">
         {/* Subtitle */}

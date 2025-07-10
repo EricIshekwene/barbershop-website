@@ -2,6 +2,8 @@ import Navbar from '../components/Navbar'
 import HomeCard from '../components/HomeCard'
 import BookYourAppointment from '../components/BookYourAppointment'
 import reactLogo from '../assets/react.svg'
+import Subtext from '../components/subtext'
+import HaircutExample from '../components/HaircutExample'
 
 function Home() {
   return (
@@ -12,6 +14,8 @@ function Home() {
           <HomeCard />
           <BookYourAppointment />
         </div>
+        <Subtext text="Sharp cuts, done right. Easy booking, no hassle."/>
+        <HaircutExample />
       </div>
     </>
   )
