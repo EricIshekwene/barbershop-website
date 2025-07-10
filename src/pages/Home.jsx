@@ -5,6 +5,7 @@ import reactLogo from '../assets/react.svg'
 import Subtext from '../components/subtext'
 import HaircutExample from '../components/HaircutExample'
 import Headings from '../components/Headings'
+import ContactCard from '../components/ContactCard'
 
 function Home() {
   return (
