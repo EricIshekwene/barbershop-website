@@ -1,23 +1,15 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import Navbar from './components/Navbar'
-import HomeCard from './components/HomeCard'
-import BookYourAppointment from './components/BookYourAppointment'
+import { Routes, Route } from 'react-router-dom'
+import Home from './pages/Home'
+import BookingPage from './pages/BookingPage'
 
 function App() {
   return (
-    <>
-      <Navbar logo={reactLogo} />
-      
-      <div className="min-h-screen">
-        <div className="flex flex-col items-center justify-center gap-10">
-          <HomeCard />
-          <BookYourAppointment />
-        </div>
-      </div>
-    </>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/booking" element={<BookingPage />} />
+    </Routes>
   )
 }
 
