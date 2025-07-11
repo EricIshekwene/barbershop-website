@@ -13,7 +13,7 @@ function BookingNav({ logo, text }) {
 
                 <div className="flex items-center px-4 sm:px-10 md:px-16 lg:px-20 xl:px-32">
                     <a
-                        href="#"
+                        href="/"
                         className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl hurricane-regular text-black bg-white px-4 py-2 rounded-md"
                     >
                         Home
