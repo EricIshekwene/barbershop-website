@@ -3,7 +3,11 @@ import BookingNav from '../components/BookingNav'
 function BookingPage() {
   return (
     <>
-    <BookingNav />
+    <body className="bg-black">
+      <BookingNav />
+    </body>
+   
+   
     </>
   )
 }
