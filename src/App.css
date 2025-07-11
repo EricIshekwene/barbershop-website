@@ -22,3 +22,19 @@
     font-weight: 600;
     font-style: normal;
 }
+
+.rdp-root {
+
+    background-color: rgba(221, 202, 125, 0.1);
+    color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    font-family: "Raleway", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: normal;
+}
