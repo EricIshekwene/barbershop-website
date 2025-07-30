@@ -2,8 +2,8 @@ import React from 'react'
 
 function Navbar({ logo }) {
   return (
-    <nav className="bg-black shadow-md">
-      <div className="flex justify-between max-w-8xl mx-auto p-4 px-2">
+    <nav className="bg-black ">
+      <div className="flex justify-between max-w-8xl mx-auto p-1 px-2">
 
         <div className="flex items-center px-10">
           {logo && <img src={logo} alt="logo" className="h-10" />}

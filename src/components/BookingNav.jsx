@@ -3,7 +3,7 @@ import React from 'react'
 function BookingNav({ logo, text }) {
     return (
         <nav className="bg-black">
-            <div className="flex justify-between max-w-8xl py-4 mx-auto p-4">
+            <div className="flex justify-between max-w-8xl py-1 mx-auto p-2">
 
                 <div className="flex items-center ">
                     <p className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl hurricane-regular text-white px-4 py-2 rounded-md">

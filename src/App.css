@@ -5,6 +5,13 @@
     font-style: normal;
 }
 
+.raleway-regular {
+    font-family: "Raleway", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+}
+
 .lavishly-yours-regular {
     font-family: "Lavishly Yours", cursive;
     font-weight: 400;
@@ -23,18 +30,29 @@
     font-style: normal;
 }
 
-.rdp-root {
 
-    background-color: rgba(221, 202, 125, 0.1);
-    color: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    font-size: 1.5rem;
-    font-weight: 600;
-    font-family: "Raleway", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 900;
-    font-style: normal;
+.rdp-root {
+    /* Set your brand color */
+    --rdp-accent-color: #DDCA7D;
+    --rdp-accent-background-color: #DDCA7D;
+
+    /* Circle shape for days */
+    --rdp-day_button-border-radius: 9999px;
+
+    /* Dimensions (optional tweak) */
+    --rdp-day-button-width: 42px;
+    --rdp-day-button-height: 42px;
+
+    /* Selected border override */
+    --rdp-selected-border: none;
+
+    /* Today outline */
+    --rdp-today-color: #DDCA7D;
+
+    /* Disable opacity for outside days */
+    --rdp-outside-opacity: 0.3;
+
+    /* Optional glow on selected */
+    --rdp-shadow: 0 0 6px rgba(221, 202, 125, 0.4);
+    --rdp-day-height: 42px;
 }
