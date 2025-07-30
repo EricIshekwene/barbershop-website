@@ -17,11 +17,20 @@ function BookingCalendar() {
                     mode="single"
                     selected={selected}
                     onSelect={setSelected}
+                    navLayout='around'
+                    required
+                    disabled={[
+                        { before: new Date() },     
+                        { dayOfWeek: [0, 6] },
+                        { after: new Date(new Date().setDate(new Date().getDate() + 7)) },
+                      ]}
+                    
                     classNames={{
                         root: 'rdp-root raleway-regular',
                         selected: 'bg-[#DDCA7D] text-white rounded-full',
                         today: 'text-[#DDCA7D] font-bold',
                         chevron: 'text-[#DDCA7D]',
+                        
                     }}
                 />
                 
