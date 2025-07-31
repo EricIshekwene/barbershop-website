@@ -1,5 +1,5 @@
 import React from 'react'
-import image1 from '../assets/images.jpeg'
+import image1 from '../../assets/images.jpeg'
 
 function HaircutExample() {
     return (

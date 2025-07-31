@@ -1,11 +1,11 @@
-import Navbar from '../components/Navbar'
-import HomeCard from '../components/HomeCard'
-import BookYourAppointment from '../components/BookYourAppointment'
+import Navbar from '../components/home page/Navbar'
+import HomeCard from '../components/home page/HomeCard'
+import BookYourAppointment from '../components/home page/BookYourAppointment'
 import reactLogo from '../assets/react.svg'
-import Subtext from '../components/subtext'
-import HaircutExample from '../components/HaircutExample'
-import Headings from '../components/Headings'
-import ContactCard from '../components/ContactCard'
+import Subtext from '../components/home page/subtext'
+import HaircutExample from '../components/home page/HaircutExample'
+import Headings from '../components/home page/Headings'
+import ContactCard from '../components/home page/ContactCard'
 
 function Home() {
   return (

@@ -1,7 +1,7 @@
 import React from 'react'
 import { FaInstagram } from "react-icons/fa6";
 import { FaTiktok } from "react-icons/fa";
-import cuttVideo from '../assets/cutts.mov'
+import cuttVideo from '../../assets/cutts.mov'
 
 function HomeCard() {
   return (

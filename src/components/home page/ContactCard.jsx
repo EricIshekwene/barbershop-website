@@ -1,7 +1,7 @@
 import React from 'react'
 import { FaInstagram } from "react-icons/fa6";
 import { FaTiktok } from "react-icons/fa";
-import image1 from '../assets/images.jpeg'
+import image1 from '../../assets/images.jpeg'
 
 function ContactCard() {
     return (
