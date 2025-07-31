@@ -25,14 +25,8 @@ function HomeCard() {
 
         {/* Heading */}
         <h1
-          className="text-4xl md:text-5xl xl:text-6xl font-bold mb-2 raleway-bold"
-          style={{
-            backgroundImage: 'linear-gradient(to right,rgb(227, 222, 218) 0%,rgb(89, 67, 54) 42%, #1e130c 100%)',
-            backgroundSize: '200% auto',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
-          }}
+          className="text-4xl md:text-5xl xl:text-6xl font-bold mb-2 raleway-bold text-[#DDCA7D]"
+          
         >
           OSU's #1 Barber
         </h1>

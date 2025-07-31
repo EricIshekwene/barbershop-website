@@ -13,7 +13,7 @@ function BookingCard({ text, price, image, text2, price2, image2 }) {
             {/* Card 1 */}
             <div
                 className={`rounded-lg border text-black shadow-sm cursor-pointer transition-all duration-300 w-80 sm:w-96 md:w-112 xl:w-128 h-48 sm:h-72 md:h-80 xl:h-96 overflow-hidden ${bookingOptions === "booking-card-1"
-                    ? "bg-[#DDCA7D]/10 ring-4 ring-[#DDCA7D]/30 shadow-lg"
+                    ? "bg-[#1c1808] ring-4 ring-[#DDCA7D]/30 shadow-lg"
                     : "bg-white hover:ring-2 hover:ring-[#DDCA7D]/50"
                     }`}
                 style={{
@@ -63,7 +63,7 @@ function BookingCard({ text, price, image, text2, price2, image2 }) {
             {/* Card 2 */}
             <div
                 className={`rounded-lg border text-black shadow-sm cursor-pointer transition-all duration-300 w-80 sm:w-96 md:w-112 xl:w-128 h-48 sm:h-72 md:h-80 xl:h-96 overflow-hidden ${bookingOptions === "booking-card-2"
-                    ? "bg-[#DDCA7D]/10 ring-4 ring-[#DDCA7D]/30 shadow-lg"
+                    ? "bg-[#1c1808] ring-4 ring-[#DDCA7D]/30 shadow-lg"
                     : "bg-white hover:ring-2 hover:ring-[#DDCA7D]/50"
                     }`}
                 style={{
