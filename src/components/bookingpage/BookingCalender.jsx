@@ -27,14 +27,14 @@ function BookingCalendar() {
                     
                     classNames={{
                         root: 'rdp-root raleway-regular',
-                        selected: 'bg-[#DDCA7D] text-white rounded-full',
+                        selected: 'bg-[#1c1808] text-[#DDCA7D] rounded-full',
                         today: 'text-[#DDCA7D] font-bold',
                         chevron: 'text-[#DDCA7D]',
                         
                     }}
                 />
                 
-                <p className="text-center mt-4 text-[#DDCA7D] font-medium">
+                <p className="text-center text-[#1c1808] mt-4 font-medium">
                     {selected ? `Selected: ${selected.toLocaleDateString()}` : "Pick a day."}
                 </p>
             </div>
