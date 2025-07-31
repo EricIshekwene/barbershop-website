@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { IoMdCut } from "react-icons/io";
 import { BsFillLightningChargeFill } from "react-icons/bs";
 
-function BookingCard({ text, price, image, text2, price2, image2 }) {
+function BookingCard({ text, price, image, text2, price2, image2, setService }) {
     const [bookingOptions, setBookingOptions] = useState(null);
 
     useEffect(() => {
@@ -21,7 +21,10 @@ function BookingCard({ text, price, image, text2, price2, image2 }) {
                     borderWidth: "1px",
                     borderStyle: "solid",
                 }}
-                onClick={() => setBookingOptions("booking-card-1")}
+                onClick={() => {
+                    setBookingOptions("booking-card-1")
+                    setService("Low Taper")
+                }}
             >
                 <div className="flex flex-col h-full justify-center items-center space-y-4 p-2 text-center relative">
                     {bookingOptions === "booking-card-1" && (
@@ -71,7 +74,10 @@ function BookingCard({ text, price, image, text2, price2, image2 }) {
                     borderWidth: "1px",
                     borderStyle: "solid",
                 }}
-                onClick={() => setBookingOptions("booking-card-2")}
+                onClick={() => {
+                    setBookingOptions("booking-card-2")
+                    setService("Emergency Cut")
+                }}
             >
                 <div className="flex flex-col h-full justify-center items-center space-y-4 p-2 text-center relative">
                     {bookingOptions === "booking-card-2" && (

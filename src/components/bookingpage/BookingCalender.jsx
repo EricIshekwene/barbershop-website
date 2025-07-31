@@ -4,7 +4,7 @@ import 'react-day-picker/style.css';
 import '../../App.css'
 
 
-function BookingCalendar() {
+function BookingCalendar({setDate}) {
     const [selected, setSelected] = useState(null);
 
     return (
@@ -16,7 +16,10 @@ function BookingCalendar() {
                 <DayPicker
                     mode="single"
                     selected={selected}
-                    onSelect={setSelected}
+                    onSelect={(date) => {
+                        setSelected(date)
+                        setDate(date.toLocaleDateString())
+                    }}
                     navLayout='around'
                     required
                     disabled={[
