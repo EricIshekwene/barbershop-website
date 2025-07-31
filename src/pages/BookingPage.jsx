@@ -8,6 +8,7 @@ import BookingForm from '../components/bookingpage/BookingForm'
 import { useState } from 'react'
 
 function BookingPage() {
+  const [name, setName] = useState('');
   const [time, setTime] = useState('');
   const [date, setDate] = useState('');
   const [service, setService] = useState('');
