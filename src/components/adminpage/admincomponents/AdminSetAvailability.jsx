@@ -12,28 +12,52 @@ export default function AdminSetAvailability({ }) {
     const MockTimeslots = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
     const [selectedDate, setSelectedDate] = useState(null);
 
-    // Move MockAvailability above where it's used
+    
+
     const [availability, setAvailability] = useState([
         {
-          date: "2025-08-04",
-          timeslots: [{ time: 6, status: "unavailable" },
-            { time: 7, status: "available" },
-            { time: 8, status: "available" },
-            { time: 9, status: "available" },
-            { time: 10, status: "unavailable" },
-            { time: 11, status: "available" },
-            { time: 12, status: "available" },
-            { time: 13, status: "available" },
-            { time: 14, status: "available" },
-            { time: 15, status: "available" },
-            { time: 16, status: "available" },
-            { time: 17, status: "available" },
-            { time: 18, status: "available" },
-            { time: 19, status: "available" },
-            { time: 20, status: "available" },
-            { time: 21, status: "available" },]
+            date: "2025-08-04",
+            timeslots: [
+                { time: 6, status: "unavailable" },
+                { time: 7, status: "available" },
+                { time: 8, status: "available" },
+                { time: 9, status: "available" },
+                { time: 10, status: "unavailable" },
+                { time: 11, status: "available" },
+                { time: 12, status: "available" },
+                { time: 13, status: "available" },
+                { time: 14, status: "available" },
+                { time: 15, status: "available" },
+                { time: 16, status: "available" },
+                { time: 17, status: "available" },
+                { time: 18, status: "available" },
+                { time: 19, status: "available" },
+                { time: 20, status: "available" },
+                { time: 21, status: "available" },
+            ]
+        },
+        {
+            date: "2025-08-05",
+            timeslots: [
+                { time: 6, status: "available" },
+                { time: 7, status: "available" },
+                { time: 8, status: "available" },
+                { time: 9, status: "available" },
+                { time: 10, status: "available" },
+                { time: 11, status: "available" },
+                { time: 12, status: "available" },
+                { time: 13, status: "available" },
+                { time: 14, status: "available" },
+                { time: 15, status: "available" },
+                { time: 16, status: "available" },
+                { time: 17, status: "available" },
+                { time: 18, status: "available" },
+                { time: 19, status: "available" },
+                { time: 20, status: "available" },
+                { time: 21, status: "available" },
+            ]
         }
-      ])
+    ]);
 
     let selectedDateStr = null;
     if (selectedDate instanceof Date && !isNaN(selectedDate)) {

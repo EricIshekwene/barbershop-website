@@ -1,13 +1,11 @@
-
+!!!Fix timing dfor timeslots on admin page
 
 admin
+-modals
 -page set up
--calender
--navbar
--set times
--upcoming appointment cards
 --cancel appointment
 --reschedule
+---reschedule functionality
 --approve appointment
 --verify client
 -past appointments

@@ -5,7 +5,7 @@ export default function AdminTitle() {
         <div className='flex flex-row bg-black items-center justify-between p-4'>
             <h1 className='text-3xl raleway-regular text-[#DDCA7D] text-center'>Welcome Miguel</h1>
             <div className='flex flex-row gap-4'> <a
-                href="#"
+                href="/admin/clients"
                 className="relative inline-flex items-center justify-center px-5 py-2 mr-3 rounded-xl text-sm font-semibold montserrat-navbar-btn 
              bg-white/10 backdrop-blur-sm border border-white/20 text-[#DDCA7D]
              hover:bg-white/20 hover:shadow-md transition-all duration-300
@@ -14,7 +14,7 @@ export default function AdminTitle() {
                 Clients
             </a>
                 <a
-                    href="#"
+                    href="/admin/appointments"
                     className="relative inline-flex items-center justify-center px-5 py-2 mr-3 rounded-xl text-sm font-semibold montserrat-navbar-btn 
              bg-white/10 backdrop-blur-sm border border-white/20 text-[#DDCA7D]
              hover:bg-white/20 hover:shadow-md transition-all duration-300
@@ -23,7 +23,7 @@ export default function AdminTitle() {
                     Appointments
                 </a>
                 <a
-                    href="#"
+                    href="/admin"
                     className="relative inline-flex items-center justify-center px-5 py-2 mr-3 rounded-xl text-sm font-semibold montserrat-navbar-btn 
              bg-white/10 backdrop-blur-sm border border-white/20 text-[#DDCA7D]
              hover:bg-white/20 hover:shadow-md transition-all duration-300
