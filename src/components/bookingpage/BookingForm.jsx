@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function BookingForm({service, date, time}) {
+    const navigate = useNavigate();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
@@ -85,7 +87,8 @@ export default function BookingForm({service, date, time}) {
             setFormError('');
         }
         if (name !== '' && email !== '' && phone !== '' && instagram !== '' && time !== '' && date !== '' && service !== '') {
-            console.log(name, email, phone, instagram, date, time, service);
+            
+            navigate('/confirmation');
         }
     }
     return (

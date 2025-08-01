@@ -1,5 +1,19 @@
-contact us page form
-booking page
-calender workthorugh
+
+
+admin
+-calender
+-navbar
+-set times
+-upcoming appointment cards
+--cancel appointment
+--reschedule
+--approve appointment
+--verify client
+-past appointments
+--send email
+---ask for payment
+-client sup page
+--email all clients
+
 
 colors rgb(227, 222, 218) 0%,rgb(89, 67, 54) 42%, #1e130c 100%
