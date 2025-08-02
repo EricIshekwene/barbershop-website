@@ -6,7 +6,7 @@ import BookingPage from './pages/BookingPage'
 import ConfirmationPage from './pages/ConfirmationPage'
 import AdminHome from './components/adminpage/AdminHome'
 import AdminClients from './components/adminpage/AdminClients'
-
+import AdminLogin from './components/adminpage/AdminLogin'
 function App() {
   return (
     <Routes>
@@ -15,6 +15,7 @@ function App() {
       <Route path="/confirmation" element={<ConfirmationPage />} />
       <Route path="/admin" element={<AdminHome />} />
       <Route path="/admin/clients" element={<AdminClients />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
     </Routes>
   )
 }

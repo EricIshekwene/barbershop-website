@@ -13,7 +13,7 @@ function BookingNav({ logo, text }) {
         <div className="flex items-center space-x-4">
           <a
             href="/"
-            className="relative inline-flex items-center justify-center px-5 py-1.5 rounded-lg text-sm sm:text-sm md:text-md xl:text-md font-bold montserrat-navbar-btn transition-colors duration-200 bg-transparent border border-[#DDCA7D] text-[#DDCA7D] hover:bg-[#DDCA7D]/10 focus:outline-none focus:ring-2 focus:ring-[#DDCA7D] focus:ring-offset-2"
+            className="relative inline-flex items-center justify-center px-5 py-1.5 rounded-lg text-sm sm:text-sm md:text-md xl:text-md font-bold montserrat-navbar-btn transition-colors duration-200 bg-transparent border border-[#DDCA7D] text-[#DDCA7D] hover:bg-[#DDCA7D]/10 focus:outline-none "
           >
             Home
           </a>

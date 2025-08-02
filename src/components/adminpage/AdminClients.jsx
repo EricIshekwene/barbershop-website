@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import AdminTitle from './admincomponents/AdminTitle'
 import { FaChevronDown } from "react-icons/fa";
 import { MdModeEditOutline, MdDelete } from "react-icons/md";
@@ -28,17 +28,21 @@ const fakeClients = [
     }
 ];
 
+
 export default function AdminClients() {
+    const [showClients, setShowClients] = useState(false);
+    const handleToggleClients = () => {
+        setShowClients(!showClients);
+    }
     return (
-        <div className='flex flex-col h-screen bg-black'>chevron
-            <AdminTitle />
-           
+        <div className='flex flex-col  bg-black'>        
             <div className='flex flex-col bg-black m-8 mt-4 p-4 rounded-lg gap-4 border-1 border-white/20'>
                 <div className='flex flex-row items-center gap-2'>
                     <p className='text-2xl raleway-bold text-white'>Clients</p> 
-                    <FaChevronDown className='text-white text-2xl' />
-                    <input type="text" placeholder='Search' className='bg-white/10 text-white raleway-regular border border-white/20 rounded-lg p-2 w-1/4' />
-                   
+                    <FaChevronDown className={`text-white text-2xl transition-transform duration-200 ${showClients ? 'rotate-90' : ''}`}
+                    onClick={handleToggleClients}
+                    />
+                    {showClients && <input type="text" placeholder='Search' className='bg-white/10 text-white raleway-regular border border-white/20 rounded-lg p-2 w-1/4 focus:outline-none' />}
                 </div>
                 <div className='flex flex-row bg-white/10 border border-white/20 rounded-lg p-4 gap-5 font-semibold text-[#DDCA7D] raleway-regular'>
                     <div className="w-7/40">Name</div>
@@ -48,7 +52,7 @@ export default function AdminClients() {
                     <div className="w-7/40">Verified</div>
                     <MdEmail className='text-white text-2xl' />
                 </div>
-                {fakeClients.map((client, idx) => (
+                {showClients && fakeClients.map((client, idx) => (
                     <div 
                         key={idx}
                         className='flex flex-row bg-white/5 border border-white/10 rounded-lg p-4 gap-5 font-medium text-[#DDCA7D] raleway-regular items-center'
