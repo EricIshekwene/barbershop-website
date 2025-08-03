@@ -52,9 +52,7 @@ export default function EditProfileModal({ closeModal }) {
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm'
     onClick={() => closeModal()}
     >
-    <div className='bg-white/10 border border-white/20 rounded-lg p-4 w-1/2'
-    onClick={(e) => e.stopPropagation()}
-    >
+   
       <div className=' flex flex-col justify-center '>
         <div className='flex flex-row items-center gap-2 self-center'>
           <p className='text-white self-center raleway-bold text-2xl'>Editing {client.name}</p>
@@ -101,6 +99,6 @@ export default function EditProfileModal({ closeModal }) {
       </div>
 
     </div>
-    </div>
+    
   )
 }   

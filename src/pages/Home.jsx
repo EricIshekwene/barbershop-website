@@ -12,7 +12,7 @@ function Home() {
   const [firstName, setFirstName] = useState('');
   return (
     <>
-      <Navbar logo={reactLogo} />
+      <Navbar text="TCUTTS" />
       <div className="min-h-screen">
         <div className="flex flex-col items-center justify-center gap-10">
           

@@ -1,12 +1,12 @@
 import React from 'react'
 
-function Navbar({ logo }) {
+function Navbar({ text }) {
   return (
     <nav className="bg-black ">
       <div className="flex justify-between max-w-8xl mx-auto p-1 px-2 py-2">
 
-        <div className="flex items-center px-10 ">
-          {logo && <img src={logo} alt="logo" className="h-10" />}
+        <div className="flex items-center px-5 ">
+          {text && <p className="text-[#DDCA7D] hurricane-regular text-2xl">{text}</p>}
         </div>
         <div className="flex items-center px-4 sm:px-10 md:px-16 lg:px-20 xl:px-32">
           <div className="flex space-x-4">

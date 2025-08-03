@@ -13,6 +13,7 @@ export default function AdminHome() {
   
   return (
     <div className='flex flex-col bg-black'>
+      <AdminTitle />
         <AdminSetAvailability />
         <AdminAppointments />
         <AdminClients />

@@ -33,6 +33,7 @@ const fakeClients = [
 
 export default function AdminClients() {
     const [showClients, setShowClients] = useState(false);
+    const [selectedClient, setSelectedClient] = useState(null);
     const handleToggleClients = () => {
         setShowClients(!showClients);
     }
@@ -87,11 +88,12 @@ export default function AdminClients() {
                         onClick={() => setEditProfileModal(!editProfileModal)}
                         />
                         <MdDelete className='text-red-500 text-2xl' />
-                        {mailModal && <MailModal name={client.name} closeModal={closeModal} />}
-                        {editProfileModal && <EditProfileModal name={client.name} closeModal={closeModal} />}
+                        
                     </div>
                 ))}
             </div>
+            {mailModal && <MailModal name={selectedClient ? selectedClient.name : "Everyone"} closeModal={closeModal} />}
+            {editProfileModal && <EditProfileModal name={selectedClient ? selectedClient.name : "Everyone"} closeModal={closeModal} />}
         </div>
     )
 }

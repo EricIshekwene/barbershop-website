@@ -13,12 +13,12 @@ export default function CancelAppointment({ name, date, time, closeModal }) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
       onClick={closeModal} 
     >
-      <div
-        className="bg-[#1e1e1e] border border-white/20 rounded-xl p-6 w-[90%] max-w-md shadow-lg"
-        onClick={(e) => e.stopPropagation()} // prevent inner clicks from closing
+       <div
+        className="flex flex-col gap-6 justify-center items-center rounded-lg p-6 w-[90%] max-w-md"
+        onClick={(e) => e.stopPropagation()} 
       >
         <div className="flex flex-col gap-6 justify-center items-center">
-          <p className="text-white text-center raleway-bold text-lg sm:text-xl">
+          <p className="bg-white/10 text-white text-center focus:outline-none raleway-regular border border-white/20 rounded-lg p-2 w-full m-4">
             Are you sure you want to cancel <span className="text-[#DDCA7D]">{name}</span> on <span className="text-[#DDCA7D]">{date}</span> at <span className="text-[#DDCA7D]">{time}</span>?
           </p>
           <div className="flex flex-row justify-center items-center gap-4 w-full">
@@ -31,6 +31,6 @@ export default function CancelAppointment({ name, date, time, closeModal }) {
           </div>
         </div>
       </div>
-    </div>
+      </div>
   );
 }
