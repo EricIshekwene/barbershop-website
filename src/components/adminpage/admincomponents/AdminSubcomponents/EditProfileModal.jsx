@@ -2,7 +2,7 @@ import React from 'react'
 import { TiTick } from "react-icons/ti";
 import { ImCross } from "react-icons/im";
 import { useState } from 'react';
-export default function EditProfileModal() {
+export default function EditProfileModal({ closeModal }) {
   const [client, setClient] = useState({
     name: "John Doe",
     phone: "1234567890",
@@ -49,7 +49,12 @@ export default function EditProfileModal() {
   const UpdateTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-green-500/20 backdrop-blur-sm border border-green-400 text-green-300 hover:bg-green-500/30 hover:shadow-md transition-all duration-300 focus:outline-none "
 
   return (
-    <div className='bg-white/10 border border-white/20 rounded-lg p-4 w-1/2'>
+    <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm'
+    onClick={() => closeModal()}
+    >
+    <div className='bg-white/10 border border-white/20 rounded-lg p-4 w-1/2'
+    onClick={(e) => e.stopPropagation()}
+    >
       <div className=' flex flex-col justify-center '>
         <div className='flex flex-row items-center gap-2 self-center'>
           <p className='text-white self-center raleway-bold text-2xl'>Editing {client.name}</p>
@@ -88,11 +93,14 @@ export default function EditProfileModal() {
             client.status === "Verified" ? setClient({ ...client, status: "Unverified" }) : setClient({ ...client, status: "Verified" });
           }}
           >{client.status === "Verified" ? "Unverify" : "Verify"}</button>
-          <button className={UnavailableVerifiedTimeslotsStyle}>Close</button>
+          <button className={UnavailableVerifiedTimeslotsStyle}
+          onClick={() => closeModal()}
+          >Close</button>
           <button className={UpdateTimeslotsStyle}>Update</button>
         </div>
       </div>
 
+    </div>
     </div>
   )
 }   

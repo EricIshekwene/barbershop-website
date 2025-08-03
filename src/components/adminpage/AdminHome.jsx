@@ -6,7 +6,6 @@ import AdminClients from './AdminClients'
 import MailModal from './admincomponents/AdminSubcomponents/MailModal'
 import EditProfileModal from './admincomponents/AdminSubcomponents/EditProfileModal'
 import CancelAppointment from './admincomponents/AdminSubcomponents/CancelAppointment'
-import VerifyModal from './admincomponents/AdminSubcomponents/VerifyModal'
 
 export default function AdminHome() {
   
@@ -17,10 +16,9 @@ export default function AdminHome() {
         <AdminSetAvailability />
         <AdminAppointments />
         <AdminClients />
-        <MailModal />
-        <EditProfileModal />
-        <CancelAppointment />
-        <VerifyModal />
+        
+       
+       
     </div>
   )
 }

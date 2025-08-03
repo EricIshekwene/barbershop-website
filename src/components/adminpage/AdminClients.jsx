@@ -3,6 +3,8 @@ import AdminTitle from './admincomponents/AdminTitle'
 import { FaChevronDown } from "react-icons/fa";
 import { MdModeEditOutline, MdDelete } from "react-icons/md";
 import { MdEmail } from "react-icons/md";
+import MailModal from './admincomponents/AdminSubcomponents/MailModal'
+import EditProfileModal from './admincomponents/AdminSubcomponents/EditProfileModal'
 
 const fakeClients = [
     {
@@ -34,6 +36,12 @@ export default function AdminClients() {
     const handleToggleClients = () => {
         setShowClients(!showClients);
     }
+    const [mailModal, setMailModal] = useState(false)
+    const [editProfileModal, setEditProfileModal] = useState(false)
+    const closeModal = () => {
+        setMailModal(false)
+        setEditProfileModal(false)
+    }
     return (
         <div className='flex flex-col  bg-black'>        
             <div className='flex flex-col bg-black m-8 mt-4 p-4 rounded-lg gap-4 border-1 border-white/20'>
@@ -50,7 +58,9 @@ export default function AdminClients() {
                     <div className="w-7/40">Email</div>
                     <div className="w-7/40">Instagram</div>
                     <div className="w-7/40">Verified</div>
-                    <MdEmail className='text-white text-2xl' />
+                    <MdEmail className='text-white text-2xl'
+                    onClick={() => setMailModal(!mailModal)}
+                    />
                 </div>
                 {showClients && fakeClients.map((client, idx) => (
                     <div 
@@ -73,9 +83,12 @@ export default function AdminClients() {
                             type="checkbox"
                             className="w-5 h-5 accent-[#DDCA7D] bg-white/10 border border-white/20 rounded focus:ring-2 focus:ring-[#DDCA7D]/50 transition-all duration-200"
                         />
-                        <MdModeEditOutline className='text-white text-2xl' />
+                        <MdModeEditOutline className='text-white text-2xl'
+                        onClick={() => setEditProfileModal(!editProfileModal)}
+                        />
                         <MdDelete className='text-red-500 text-2xl' />
-
+                        {mailModal && <MailModal name={client.name} closeModal={closeModal} />}
+                        {editProfileModal && <EditProfileModal name={client.name} closeModal={closeModal} />}
                     </div>
                 ))}
             </div>
