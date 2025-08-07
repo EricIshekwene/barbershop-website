@@ -22,6 +22,34 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
 # Environment variables
 .env
 .env.*
+.env.local
+.env.development
+.env.production
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# SSL certificates
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Backup files
+*.bak
+*.backup
+
+# Build outputs
+build/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/

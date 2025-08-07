@@ -58,9 +58,6 @@ export default function AdminLogin() {
                 <button type='submit'
                     className='bg-[#DDCA7D] raleway-bold text-[#1c1808] px-16 py-4 rounded-lg text-xl font-bold uppercase tracking-wide shadow-lg transition-all duration-500 transform hover:scale-105 flex items-center gap-2'
                 >Login</button>
-                <button
-                    className='bg-[#DDCA7D] raleway-bold text-[#1c1808] px-16 py-4 rounded-lg text-xl font-bold uppercase tracking-wide shadow-lg transition-all duration-500 transform hover:scale-105 flex items-center gap-2'
-                onClick={() => navigate('/admin')}>Register</button>
             </form>
         </div>
     )

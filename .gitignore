@@ -1,0 +1,60 @@
+# Environment variables
+Barbershop-FrontEnd/.env
+Barbershop-Backend/.env
+Barbershop-FrontEnd/.env.local
+Barbershop-Backend/.env.local
+Barbershop-FrontEnd/.env.development
+Barbershop-Backend/.env.development
+Barbershop-FrontEnd/.env.production
+Barbershop-Backend/.env.production
+
+# Package lock files (already covered but being explicit)
+Barbershop-FrontEnd/package-lock.json
+Barbershop-Backend/package-lock.json
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Log files
+*.log
+logs/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Build outputs
+Barbershop-FrontEnd/dist/
+Barbershop-FrontEnd/build/
+Barbershop-Backend/dist/
+Barbershop-Backend/build/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# SSL certificates
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Backup files
+*.bak
+*.backup

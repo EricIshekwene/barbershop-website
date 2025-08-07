@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { DayPicker } from 'react-day-picker'
 
+
 export default function AdminSetAvailability({ }) {
     const [data, setData] = useState(null);
     const [isUpdateDisabled, setIsUpdateDisabled] = useState(false);
     const [selectedDate, setSelectedDate] = useState(null);
     const [availability, setAvailability] = useState([]);
-
+    const [errorMessage, setErrorMessage] = useState("");
+    const AvailableTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-white/10 backdrop-blur-sm border border-white/20 text-[#DDCA7D] hover:bg-white/20 hover:shadow-md transition-all duration-300 focus:outline-none"
+    const UnavailableVerifiedTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-red-500/20 backdrop-blur-sm border border-red-400/30 text-red-300 opacity-70 hover:bg-red-500/30 transition-all duration-300 focus:outline-none"
+    const UnavailableUnverifiedTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-yellow-400/10 backdrop-blur-sm border border-yellow-300 text-yellow-300 hover:bg-yellow-400/20 hover:shadow transition-all duration-30 focus:outline-none"
+    const UpdateTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn  bg-green-500/20 backdrop-blur-sm border border-green-400 text-green-300 hover:bg-green-500/30 hover:shadow-md transition-all duration-300 focus:outline-none "
+    //const MockTimeslots = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+    
 
 
     
@@ -27,48 +34,68 @@ export default function AdminSetAvailability({ }) {
         }
         fetchData();
     }, []);
-    
-   
 
-    const AvailableTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-white/10 backdrop-blur-sm border border-white/20 text-[#DDCA7D] hover:bg-white/20 hover:shadow-md transition-all duration-300 focus:outline-none"
-    const UnavailableVerifiedTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-red-500/20 backdrop-blur-sm border border-red-400/30 text-red-300 opacity-70 hover:bg-red-500/30 transition-all duration-300 focus:outline-none"
-    const UnavailableUnverifiedTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-yellow-400/10 backdrop-blur-sm border border-yellow-300 text-yellow-300 hover:bg-yellow-400/20 hover:shadow transition-all duration-30 focus:outline-none"
-    const UpdateTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn  bg-green-500/20 backdrop-blur-sm border border-green-400 text-green-300 hover:bg-green-500/30 hover:shadow-md transition-all duration-300 focus:outline-none "
-    const MockTimeslots = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
-    
-   
+
 
     let selectedDateStr = null;
     if (selectedDate instanceof Date && !isNaN(selectedDate)) {
-        selectedDateStr = selectedDate.toISOString().split('T')[0];
+        selectedDateStr = selectedDate.toLocaleDateString('en-CA', {
+            timeZone: 'America/New_York',
+        });
     }
     const selectedDay = selectedDateStr
         ? availability.find(item => item.date === selectedDateStr)
         : null;
 
-    const handleUpdateClick = () => {
-        if (!selectedDateStr) return;
-        
-        const updatedDay = availability.find(item => item.date === selectedDateStr);
+        const handleUpdateClick = async () => {
+            if (!selectedDateStr) return;
+          
+            const updatedDay = availability.find(item => item.date === selectedDateStr);
+          
+            if (!updatedDay) return;
+          
+            try {
+              const res = await fetch('http://localhost:3000/api/admin/updateAvailability', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify(updatedDay),
+              });
+          
+              if (res.ok) {
+                //reload page
+                setErrorMessage("Successfully updated availability");
+                setTimeout(() => {
+                    setErrorMessage("");
+                }, 1000);
+                
+              }else{
+                //HANDLE ERROR
+                //this error is when the data is not updated in the backend for the timeslots
+                setErrorMessage("Error updating availability");
+                setTimeout(() => {
+                    setErrorMessage("");
+                }, 1000);
+              }
 
-        if (updatedDay) {
-          // 🧠 Save the updated day's availability — replace this with real logic
-          console.log("Saving availability for:", updatedDay.date);
-          console.log("Timeslots:", updatedDay.timeslots);
-      
-          // TODO: Send to backend API or local storage
-          // fetch("/api/saveAvailability", { method: "POST", body: JSON.stringify(updatedDay) })
-        }
-      
-
-        
-        setIsUpdateDisabled(true);
-        setTimeout(() => {
-            setIsUpdateDisabled(false);
-        }, 10000);
-        // Place your update logic here if needed
-
-    };
+              const responseData = await res.json();
+              console.log("✅ Update successful:", responseData);
+          
+            } catch (err) {
+              console.error("❌ Update failed:", err);
+              setErrorMessage("Error updating availability");
+              setTimeout(() => {
+                setErrorMessage("");
+            }, 1000);
+            }
+          
+            setIsUpdateDisabled(true);
+            setTimeout(() => {
+              setIsUpdateDisabled(false);
+            }, 10000);
+          };
 
     return (
         <div className="flex border-1 border-white/20 m-8 p-4 rounded-lg gap-4">
@@ -186,6 +213,14 @@ export default function AdminSetAvailability({ }) {
                             style={{ minWidth: '6rem', minHeight: '2rem' }}
                         >
                             Unverified
+                        </button>
+                    </div>
+                    <div className='flex items-center p-2'>
+                        <button
+                            className={UnavailableVerifiedTimeslotsStyle}
+                            style={{ minWidth: '6rem', minHeight: '2rem' }}
+                        >
+                            {errorMessage}
                         </button>
                     </div>
                 </div>
