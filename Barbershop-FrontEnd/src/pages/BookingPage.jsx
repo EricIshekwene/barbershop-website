@@ -2,9 +2,8 @@ import BookingNav from '../components/bookingpage/BookingNav'
 import BookingCard from '../components/bookingpage/BookingCard'
 import reactLogo from '../assets/react.svg'
 import BookingCalender from '../components/bookingpage/BookingCalender'
-import BookingFrom from '../components/bookingpage/BookingFrom'
 import BookingTime from '../components/bookingpage/BookingTime'
-import BookingForm from '../components/bookingpage/BookingForm'
+import BookingForm from '../components/bookingpage/BookingForm.jsx';
 import { useEffect, useState } from 'react'
 
 function BookingPage() {

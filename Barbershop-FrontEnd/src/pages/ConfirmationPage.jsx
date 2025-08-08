@@ -1,54 +1,80 @@
-import React from 'react'
-import { MdOutlineMarkEmailRead } from "react-icons/md";
-import { useNavigate } from 'react-router-dom';
-import { TiTick } from "react-icons/ti";
-import { RxCross1 } from "react-icons/rx";
-
+import { useNavigate, useLocation } from 'react-router-dom';
+import { MdOutlineMarkEmailRead } from 'react-icons/md';
+import { TiTick } from 'react-icons/ti';
+import { RxCross1 } from 'react-icons/rx';
+import { useState, useEffect } from 'react';
 
 export default function ConfirmationPage() {
-    const navigate = useNavigate(); 
-    return (
-        <div className='flex flex-col bg-black items-center justify-center h-screen gap-4'>
-            <h1 className='text-3xl raleway-regular text-[#DDCA7D] text-center'>Email Sent</h1>
-            <MdOutlineMarkEmailRead className='text-6xl text-[#DDCA7D]' />
-            <p className='text-sm text-white text-center raleway-regular'>Please check your email for the confirmation link</p>
-            {/* 
-            <button className='bg-[#DDCA7D] raleway-bold text-[#1c1808] px-13 py-4 rounded-lg text-lg font-medium uppercase tracking-wide shadow-lg transition-all duration-500 transform hover:scale-105 flex items-center gap-2'>
-            <div className='flex gap-10 flex-row'>
-            <TiTick className='text-6xl ' />
-            <div className='flex items-center gap-2 flex-col'>
-            <p className='text-2xl'>All Good!</p>
-              <p className='text-xs'>Back to Home</p>
-            </div>
-            </div>
-            </button>
-            <button className='bg-[#1c1808] raleway-bold text-[#DDCA7D] px-6 py-4 rounded-lg text-lg font-medium uppercase tracking-wide shadow-lg transition-all duration-500 transform hover:scale-105 flex items-center gap-2'>
-                <div className='flex gap-10 flex-row'>
-                  <RxCross1 className='text-6xl' />
-                  <div className='flex items-center gap-2 flex-col'>
-                    <p className='text-xl'>Didn't get the email?</p>
-                    <p className='text-xs'>Back to Form</p>
-                  </div>
-                </div>
-            </button> 
-            */}
-             <button className='bg-[#DDCA7D] raleway-bold text-[#1c1808] px-26 py-4 rounded-lg text-lg font-medium uppercase
-             tracking-wide shadow-lg transition-all duration-500 transform hover:scale-105 flex items-center gap-2'
-             onClick={() => navigate('/')}>
-            <div className='flex items-center gap-2 flex-col'>
-            <div className='flex gap-2 flex-row'> <TiTick className='text-2xl ' /> All Good!</div>
-            <p className='text-xs'>Back to Home</p>
-            </div>
-            </button>
-            <button className='bg-[#1c1808] raleway-bold text-[#DDCA7D] px-12 py-4 rounded-lg text-lg font-medium
-            uppercase tracking-wide shadow-lg transition-all duration-500 transform hover:scale-105 flex items-center gap-2'
-            onClick={() => navigate('/booking')}>
-                <div className='flex items-center gap-2 flex-col'>
-                <div className='flex gap-2 flex-row'><RxCross1 className='text-2xl' /> Didn't get the email?</div>
-                <p className='text-xs'>Back to Form</p>
-                </div>
-            </button> 
-           
+  const navigate = useNavigate(); 
+  const location = useLocation();
+  const state = location.state;
+
+  // Guard clause: Redirect if state is missing
+  useEffect(() => {
+    if (!state) {
+      navigate('/booking');
+    }
+  }, [state, navigate]);
+  
+  if (!state) return null;
+  
+
+  const [Error, setError] = useState("");
+  const [userConfirmationCode, setUserConfirmationCode] = useState("");
+  const { name, email, date, time, service, confirmationCode } = state;
+
+  const handleConfirmationSubmit = (e) => {
+    e.preventDefault();
+    if (String(userConfirmationCode).trim() === String(confirmationCode).trim()) {
+      navigate('/');
+    } else {
+      setError("Invalid confirmation code");
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-black flex items-center justify-center p-6">
+      <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-8 w-full max-w-md">
+        <div className="flex flex-col items-center gap-4">
+          <MdOutlineMarkEmailRead className="text-6xl text-[#DDCA7D]" />
+          <h1 className="text-3xl raleway-bold text-[#DDCA7D] text-center">Email Sent</h1>
+          <p className="text-sm text-white text-center raleway-regular">
+            Please check your email for the confirmation code.
+          </p>
+          {Error && <p className="text-red-500 raleway-regular text-left text-sm font-bold">{Error}</p>}
+          
+          <div className="text-sm text-white text-center raleway-regular mt-2">
+            <p><span className="text-[#DDCA7D] font-bold">Name:</span> {name}</p>
+            <p><span className="text-[#DDCA7D] font-bold">Email:</span> {email}</p>
+            <p><span className="text-[#DDCA7D] font-bold">Booking:</span> {date} @ {time}:00</p>
+            <p><span className="text-[#DDCA7D] font-bold">Service:</span> {service}</p>
+          </div>
+
+          <input
+            type="text"
+            placeholder="Confirmation Code"
+            className="raleway-regular w-full p-2 rounded-md border border-white/20 text-[#DDCA7D] bg-black/20 backdrop-blur-sm focus:outline-none focus:ring-0 mt-4"
+            value={userConfirmationCode}
+            onChange={(e) => setUserConfirmationCode(e.target.value)}
+          />
+
+          <button type="submit"
+            className="bg-[#DDCA7D] text-[#1c1808] raleway-bold px-8 py-3 rounded-lg text-lg uppercase tracking-wide shadow-md hover:scale-105 transition-all flex items-center gap-2"
+            onClick={handleConfirmationSubmit}
+          >
+            <TiTick className="text-2xl" />
+            All Good!
+          </button>
+
+          <button type="button"
+            className="bg-[#1c1808] text-[#DDCA7D] raleway-bold px-8 py-3 rounded-lg text-lg uppercase tracking-wide shadow-md hover:scale-105 transition-all flex items-center gap-2"
+            onClick={() => navigate('/booking')}
+          >
+            <RxCross1 className="text-2xl" />
+            Didn’t get the email?
+          </button>
         </div>
-    )
+      </div>
+    </div>
+  );
 }

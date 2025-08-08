@@ -2,46 +2,78 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db/pool');
 
-router.post('/addNewClient', async (req, res) => {
-    const { name, email, phone, instagram } = req.body;
-    console.log("client route hit");
+router.post('/addClient', async (req, res) => {
+  const { name, email, phone, instagram } = req.body;
+  console.log("client route hit");
 
-    if (!name || !email || !phone) {
-        return res.status(400).json({ error: 'Name, email, and phone are required' });
+  if (!name || !email || !phone) {
+    return res.status(400).json({ error: 'Name, email, and phone are required' });
+  }
+
+  const normEmail = String(email).trim().toLowerCase();
+
+  try {
+    // 1️⃣ Check if email already exists AND is verified
+    const verifiedEmailResult = await pool.query(
+      `SELECT * FROM clients WHERE email = $1 AND email_verified = true LIMIT 1`,
+      [normEmail]
+    );
+
+    if (verifiedEmailResult.rows.length > 0) {
+      return res.status(200).json({
+        message: 'Email already verified',
+        verified: true,
+        client: verifiedEmailResult.rows[0],
+      });
     }
+    // 2️⃣ Check if email exists but is unverified and update the record with the latest info
+    const unverifiedEmailResult = await pool.query(
+        `SELECT * FROM clients WHERE email = $1 AND email_verified = false LIMIT 1`,
+        [normEmail]
+      );
 
-    try {
-        // Check if any record exists with 2 out of 3 matching fields
-        const checkQuery = `
-            SELECT * FROM clients
-            WHERE 
-                (name = $1 AND email = $2) OR
-                (name = $1 AND phone = $3) OR
-                (email = $2 AND phone = $3)
-            LIMIT 1
-        `;
-        const checkResult = await pool.query(checkQuery, [name, email, phone]);
+      
+  if (unverifiedEmailResult.rows.length > 0) {
+    // Update the existing record with the latest info
+    const updateResult = await pool.query(
+      `UPDATE clients
+       SET name = $1,
+           phone = $2,
+           instagram = COALESCE($3, instagram)
+       WHERE email = $4
+       RETURNING *`,
+      [name, phone, instagram || null, normEmail]
+    );
 
-        if (checkResult.rows.length > 0) {
-            return res.status(409).json({ error: 'Client already exists with matching details' });
-        }
+    return res.status(201).json({
+      message: 'Unverified client updated with latest info',
+      verified: false,
+      client: updateResult.rows[0],
+    });
+  }
 
-        // Insert the new client
-        const insertQuery = `
-            INSERT INTO clients (name, email, phone, instagram)
-            VALUES ($1, $2, $3, $4)
-            RETURNING *
-        `;
-        const insertResult = await pool.query(insertQuery, [name, email, phone, instagram || null]);
-        const newClient = insertResult.rows[0];
+    // 3️⃣ If email doesn't exist, create a new unverified row
+    const insertResult = await pool.query(
+      `INSERT INTO clients (name, email, phone, instagram, email_confirmed, email_verified)
+       VALUES ($1, $2, $3, $4, false, false)
+       ON CONFLICT (email) DO UPDATE
+         SET name = EXCLUDED.name,
+             phone = EXCLUDED.phone,
+             instagram = COALESCE(EXCLUDED.instagram, clients.instagram)
+       RETURNING *`,
+      [name, normEmail, phone, instagram || null]
+    );
 
-        console.log('✅ Client created:', newClient);
-        return res.status(201).json({ message: 'Client created successfully', client: newClient });
+    return res.status(201).json({
+      message: 'Client created/updated, needs verification',
+      verified: false,
+      client: insertResult.rows[0],
+    });
 
-    } catch (err) {
-        console.error('❌ Error inserting client:', err.message);
-        return res.status(500).json({ error: 'Server error while creating client' });
-    }
+  } catch (err) {
+    console.error('❌ Error inserting client:', err.message);
+    return res.status(500).json({ error: 'Server error while creating client' });
+  }
 });
 
 module.exports = router;
