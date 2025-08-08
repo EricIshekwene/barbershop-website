@@ -23,10 +23,36 @@ export default function ConfirmationPage() {
   const [userConfirmationCode, setUserConfirmationCode] = useState("");
   const { name, email, date, time, service, confirmationCode } = state;
 
-  const handleConfirmationSubmit = (e) => {
+  const handleConfirmationSubmit = async (e) => {
     e.preventDefault();
     if (String(userConfirmationCode).trim() === String(confirmationCode).trim()) {
-      navigate('/');
+      navigate('/confirmed', { state: { name, email, date, time, service } });
+      //verify email
+      
+      const verifyEmail = await fetch('http://localhost:3000/api/confirmation/verify-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, code: userConfirmationCode }),
+      });
+      if (verifyEmail.ok) {
+        //add booking to database
+        const addBooking = await fetch('http://localhost:3000/api/confirmation/add-booking', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name, email, date, time, service }),
+        });
+        if (addBooking.ok) {
+          navigate('/confirmed', { state: { name, email, date, time, service } });
+        } else {
+          setError("Failed to add booking");
+        }
+      } else {
+        setError("Account with this information does not exist");
+      }
     } else {
       setError("Invalid confirmation code");
     }

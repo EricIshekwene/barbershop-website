@@ -54,15 +54,16 @@ router.post('/addClient', async (req, res) => {
 
     // 3️⃣ If email doesn't exist, create a new unverified row
     const insertResult = await pool.query(
-      `INSERT INTO clients (name, email, phone, instagram, email_confirmed, email_verified)
-       VALUES ($1, $2, $3, $4, false, false)
-       ON CONFLICT (email) DO UPDATE
-         SET name = EXCLUDED.name,
-             phone = EXCLUDED.phone,
-             instagram = COALESCE(EXCLUDED.instagram, clients.instagram)
-       RETURNING *`,
-      [name, normEmail, phone, instagram || null]
-    );
+        `INSERT INTO clients (name, email, phone, instagram)
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (email) DO UPDATE
+           SET name = EXCLUDED.name,
+               phone = EXCLUDED.phone,
+               instagram = COALESCE(EXCLUDED.instagram, clients.instagram)
+         RETURNING *`,
+        [name, email, phone, instagram || null] // email can be in any case
+      );
+      
 
     return res.status(201).json({
       message: 'Client created/updated, needs verification',

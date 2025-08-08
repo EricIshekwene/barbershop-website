@@ -53,7 +53,7 @@ function BookingCalendar({setDate, setTime}) {
                     selected={selected}
                     onSelect={(date) => {
                         setSelected(date)
-                        setDate(date.toLocaleDateString())
+                        setDate(date.toISOString().split('T')[0]);
                     }}
                     navLayout='around'
                     required
