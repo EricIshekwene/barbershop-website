@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect} from 'react'
 import AdminTitle from './admincomponents/AdminTitle'
 import { FaChevronDown } from "react-icons/fa";
 import { MdModeEditOutline, MdDelete } from "react-icons/md";
@@ -34,15 +34,59 @@ const fakeClients = [
 export default function AdminClients() {
     const [showClients, setShowClients] = useState(false);
     const [selectedClient, setSelectedClient] = useState(null);
+    const [error, setError] = useState('');
+    const [clients, setClients] = useState([]);
     const handleToggleClients = () => {
         setShowClients(!showClients);
     }
+    const UnavailableVerifiedTimeslotsStyle =
+    "px-4 py-2 rounded-xl text-xl font-semibold montserrat-navbar-btn bg-red-500/20 backdrop-blur-sm border border-red-400/30 text-red-300 opacity-70 hover:bg-red-500/30 transition-all duration-300 focus:outline-none";
+  
     const [mailModal, setMailModal] = useState(false)
     const [editProfileModal, setEditProfileModal] = useState(false)
     const closeModal = () => {
         setMailModal(false)
         setEditProfileModal(false)
     }
+    useEffect(() => {
+  const fetchClients = async () => {
+    try {
+      const res = await fetch('http://localhost:3000/api/admin/verified-clients', {
+        headers: { Accept: 'application/json' },
+        // credentials: 'include', // uncomment if your API uses cookies/session
+      });
+
+      const contentType = res.headers.get('content-type') || '';
+      const bodyText = await res.text(); // read raw first for diagnostics
+
+      if (!res.ok) {
+        // backend returned an error page or message
+        if (contentType.includes('application/json')) {
+          const err = JSON.parse(bodyText);
+          throw new Error(err.error || `HTTP ${res.status}`);
+        } else {
+          // Likely HTML; show a short snippet
+          throw new Error(`HTTP ${res.status}. Non-JSON response: ${bodyText.slice(0, 120)}...`);
+        }
+      }
+
+      if (!contentType.includes('application/json')) {
+        // 200 but HTML? probably hit the wrong server/route or got SPA index.html
+        throw new Error(`Expected JSON but got: ${contentType}. Snippet: ${bodyText.slice(0, 120)}...`);
+      }
+
+      const data = JSON.parse(bodyText);
+      setClients(data);
+      setError('');
+    } catch (err) {
+      console.error('❌ Error fetching clients:', err);
+      setError(err.message || 'Failed to fetch clients');
+    }
+  };
+
+  fetchClients();
+}, []);
+
     return (
         <div className='flex flex-col  bg-black'>        
             <div className='flex flex-col bg-black m-8 mt-4 p-4 rounded-lg gap-4 border-1 border-white/20'>
@@ -63,7 +107,7 @@ export default function AdminClients() {
                     onClick={() => setMailModal(!mailModal)}
                     />
                 </div>
-                {showClients && fakeClients.map((client, idx) => (
+                {showClients && clients.map((client, idx) => (
                     <div 
                         key={idx}
                         className='flex flex-row bg-white/5 border border-white/10 rounded-lg p-4 gap-5 font-medium text-[#DDCA7D] raleway-regular items-center'
@@ -91,6 +135,14 @@ export default function AdminClients() {
                         
                     </div>
                 ))}
+                {error && <div 
+                        
+                        className={UnavailableVerifiedTimeslotsStyle}
+                    >
+                        <p className='text-center'>{error}</p>
+                        
+                    </div>
+                }
             </div>
             {mailModal && <MailModal name={selectedClient ? selectedClient.name : "Everyone"} closeModal={closeModal} />}
             {editProfileModal && <EditProfileModal name={selectedClient ? selectedClient.name : "Everyone"} closeModal={closeModal} />}

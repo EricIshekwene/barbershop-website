@@ -169,7 +169,7 @@ export default function BookingForm({ service, date, time }) {
             } else if (res.status === 200) {
                 console.log("✅ Client already exists and is verified");
                 const bookingState = { name, email, phone, instagram, date, time, service };
-                sessionStorage.setItem("booking", JSON.stringify(bookingState));
+                
                 
                 const pgTime = toPgTime(time);
                 const addBooking = await fetch('http://localhost:3000/api/confirmation/add-booking', {
@@ -180,10 +180,19 @@ export default function BookingForm({ service, date, time }) {
                     body: JSON.stringify({ name, email, date, time: pgTime, service }),
                 });
                 if (addBooking.ok) {
-                    navigate('/confirmed', { state: bookingState });
-                } else {
-                    setFormError("Failed to add booking");
-                }
+                    const payload = await addBooking.json();
+                    if (payload.booking && payload.booking.id) {
+                      sessionStorage.setItem("booking", JSON.stringify(payload.booking));
+                      navigate('/confirmed', { state: payload.booking });
+                    } else {
+                      setFormError("Booking response invalid. Please try again.");
+                      console.error("❌ Booking insert failed:", payload);
+                    }
+                  } else {
+                    const errData = await addBooking.json().catch(() => ({}));
+                    setFormError(errData.error || "Failed to add booking");
+                    console.error("❌ Error adding booking:", errData);
+                  }
             } else {
                 const error = await res.json();
                 setFormError(error.error || error.message || "An error occurred. Please try again.");

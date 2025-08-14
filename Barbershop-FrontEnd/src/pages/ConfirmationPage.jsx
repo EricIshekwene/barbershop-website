@@ -4,11 +4,15 @@ import { TiTick } from 'react-icons/ti';
 import { RxCross1 } from 'react-icons/rx';
 import { useState, useEffect } from 'react';
 
+
 export default function ConfirmationPage() {
   const navigate = useNavigate(); 
   const location = useLocation();
   const state = location.state;
-
+  const toPgTime = (t) => {
+    // Make sure it's a 2-digit hour with :00:00
+    return String(t).padStart(2, '0') + ':00:00';
+  };
   // Guard clause: Redirect if state is missing
   useEffect(() => {
     if (!state) {
@@ -38,12 +42,13 @@ export default function ConfirmationPage() {
       });
       if (verifyEmail.ok) {
         //add booking to database
+        const pgTime = toPgTime(time);
         const addBooking = await fetch('http://localhost:3000/api/confirmation/add-booking', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ name, email, date, time, service }),
+          body: JSON.stringify({ name, email, date, time: pgTime, service }),
         });
         if (addBooking.ok) {
           navigate('/confirmed', { state: { name, email, date, time, service } });

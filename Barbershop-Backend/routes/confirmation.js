@@ -60,7 +60,19 @@ router.post('/verify-email', async (req, res) => {
     if (!name || !email || !date || !time || !service) {
       return res.status(400).json({ error: "Name, email, date, time, and service are required" });
     }
-  
+    const normalizeTime = (t) => {
+      const s = String(t).trim();
+      if (/^\d{1,2}$/.test(s)) return s.padStart(2, '0') + ':00:00';        // "1" -> "01:00:00"
+      if (/^\d{1,2}:\d{2}$/.test(s)) return s + ':00';                       // "01:00" -> "01:00:00"
+      if (/^\d{1,2}:\d{2}:\d{2}$/.test(s)) return s;                         // already HH:MM:SS
+      throw new Error(`Bad time format: ${s}`);
+    };
+    let pgTime;
+    try {
+      pgTime = normalizeTime(time);
+    } catch (e) {
+      return res.status(400).json({ error: e.message });
+    }
     try {
       // 1️⃣ Find verified client
       const clientResult = await pool.query(
@@ -77,9 +89,9 @@ router.post('/verify-email', async (req, res) => {
       // 2️⃣ Insert booking
       const bookingResult = await pool.query(
         `INSERT INTO appointments (client_id, service_type, appointment_date, appointment_time, status)
-         VALUES ($1, $2, $3, $4, 'pending')
+         VALUES ($1, $2, $3::date, $4::time, 'pending')
          RETURNING *`,
-        [clientId, service, date, time]
+        [clientId, service, date, pgTime]
       );
       console.log("Booking added successfully", bookingResult.rows[0]);
       return res.status(201).json({

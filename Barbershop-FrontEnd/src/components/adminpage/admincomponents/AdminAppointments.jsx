@@ -19,7 +19,35 @@ export default function AdminAppointments() {
         setShowPastAppointments(!showPastAppointments);
 
     };
-
+const fakeData = [
+    {
+        name: "John Doe",
+        time: "10:00 AM",
+        date: "10/10/2025",
+        service: "Low Taper $20",
+        instagram: "john_doe",
+        status: "Unverified",
+        bookingStatus: "Pending"
+    },
+    {
+        name: "Jane Smith",
+        time: "11:00 AM",   
+        date: "10/10/2025",
+        service: "Mid Fade $25",
+        instagram: "janesmith",
+        status: "Verified",
+        bookingStatus: "Approved"
+    },
+    {
+        name: "Alex Lee",
+        time: "12:00 PM",
+        date: "10/10/2025",
+        service: "High Fade $30",
+        instagram: "alexlee",
+        status: "Verified",
+        bookingStatus: "Pending"
+    }
+]
     return (
         <div className='flex flex-col bg-black m-8 mt-4 p-4 rounded-lg gap-4 border-1 border-white/20'>
             <div
@@ -35,9 +63,9 @@ export default function AdminAppointments() {
             </div>
             {showUpcomingAppointments && (
                 <>
-                    <UpcomingAppointment name="John Doe" time="10:00 AM" date="10/10/2025" service="Low Taper $20" instagram="john_doe" status="Unverified" bookingStatus="Pending" />
-                    <UpcomingAppointment name="Jane Smith" time="11:00 AM" date="10/10/2025" service="Mid Fade $25" instagram="janesmith" status="Verified" bookingStatus="Approved" />
-                    <UpcomingAppointment name="Alex Lee" time="12:00 PM" date="10/10/2025" service="High Fade $30" instagram="alexlee" status="Verified" bookingStatus="Pending" />
+                    {fakeData.map((item, index) => (
+                        <UpcomingAppointment key={index} name={item.name} time={item.time} date={item.date} service={item.service} instagram={item.instagram} status={item.status} bookingStatus={item.bookingStatus} />
+                    ))}
                 </>
             )}
             <div
@@ -53,8 +81,9 @@ export default function AdminAppointments() {
             </div>
             {showPastAppointments && (
                 <>
-                    <PastAppointments name="Johnny" time="10:00 AM" date="10/10/2025" service="Low Taper $20" instagram="john_doe" status="Verified" bookingStatus="Pending" />
-                    <PastAppointments name="Sarah" time="1:00 PM" date="09/10/2025" service="Buzz Cut $15" instagram="sarahcutz" status="Unverified" bookingStatus="Completed" />
+                    {fakeData.map((item, index) => (
+                        <PastAppointments key={index} name={item.name} time={item.time} date={item.date} service={item.service} instagram={item.instagram} status={item.status} bookingStatus={item.bookingStatus} />
+                    ))}
                 </>
             )}
         </div>
