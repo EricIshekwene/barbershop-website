@@ -39,9 +39,12 @@ export default function AdminClients() {
     const handleToggleClients = () => {
         setShowClients(!showClients);
     }
-    const UnavailableVerifiedTimeslotsStyle =
-    "px-4 py-2 rounded-xl text-xl font-semibold montserrat-navbar-btn bg-red-500/20 backdrop-blur-sm border border-red-400/30 text-red-300 opacity-70 hover:bg-red-500/30 transition-all duration-300 focus:outline-none";
-  
+    const AvailableTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-white/10 backdrop-blur-sm border border-white/20 text-[#DDCA7D] hover:bg-white/20 hover:shadow-md transition-all duration-300 focus:outline-none"
+    const UnavailableVerifiedTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-red-500/20 backdrop-blur-sm border border-red-400/30 text-red-300 opacity-70 hover:bg-red-500/30 transition-all duration-300 focus:outline-none"
+    const UnavailableUnverifiedTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-yellow-400/10 backdrop-blur-sm border border-yellow-300 text-yellow-300 hover:bg-yellow-400/20 hover:shadow transition-all duration-30 focus:outline-none"
+    const UpdateTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn  bg-green-500/20 backdrop-blur-sm border border-green-400 text-green-300 hover:bg-green-500/30 hover:shadow-md transition-all duration-300 focus:outline-none "
+    
+    const [clientCount, setClientCount] = useState(0);
     const [mailModal, setMailModal] = useState(false)
     const [editProfileModal, setEditProfileModal] = useState(false)
     const closeModal = () => {
@@ -76,7 +79,8 @@ export default function AdminClients() {
       }
 
       const data = JSON.parse(bodyText);
-      setClients(data);
+      setClients(data.clients);
+      setClientCount(data.count);
       setError('');
     } catch (err) {
       console.error('❌ Error fetching clients:', err);
@@ -92,6 +96,9 @@ export default function AdminClients() {
             <div className='flex flex-col bg-black m-8 mt-4 p-4 rounded-lg gap-4 border-1 border-white/20'>
                 <div className='flex flex-row items-center gap-2'>
                     <p className='text-2xl raleway-bold text-white'>Clients</p> 
+                    <div className={AvailableTimeslotsStyle}>
+                        <p>{clientCount}</p>
+                    </div>
                     <FaChevronDown className={`text-white text-2xl transition-transform duration-200 ${showClients ? 'rotate-90' : ''}`}
                     onClick={handleToggleClients}
                     />

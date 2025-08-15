@@ -6,7 +6,7 @@ import EditProfileModal from './EditProfileModal'
 import CancelAppointment from './CancelAppointment'
 
 
-export default function UpcomingAppointment({name, time, date, service, instagram, status, bookingStatus}) {
+export default function UpcomingAppointment({name, time, date, service, instagram, bookingStatus}) {
     const AvailableTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-white/10 backdrop-blur-sm border border-white/20 text-[#DDCA7D] hover:bg-white/20 hover:shadow-md transition-all duration-300 focus:outline-none"
     const UnavailableVerifiedTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-red-500/20 backdrop-blur-sm border border-red-400/30 text-red-300 opacity-70 hover:bg-red-500/30 transition-all duration-300 focus:outline-none"
     const UnavailableUnverifiedTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-yellow-400/10 backdrop-blur-sm border border-yellow-300 text-yellow-300 hover:bg-yellow-400/20 hover:shadow transition-all duration-30 focus:outline-none"
@@ -22,8 +22,7 @@ export default function UpcomingAppointment({name, time, date, service, instagra
                 <div className='flex flex-col gap-1'>
                     <div className='flex flex-row items-center gap-2'>
                 <p className='text-white raleway-bold text-4xl'>{name}</p>
-                {status === "Verified" && <button className={UpdateTimeslotsStyle} >  <TiTick className='text-green-300 text-xl'/> </button> }
-                </div>
+                 </div>
                 <div className='flex flex-col gap-1'>
                     <p className='text-white text-xs raleway-regular'>{time}</p>
                     <p className='text-white text-xs raleway-regular'>{date}</p>
@@ -43,7 +42,7 @@ export default function UpcomingAppointment({name, time, date, service, instagra
                     <button className={UnavailableVerifiedTimeslotsStyle}
                     onClick={() => setCancelAppointmentModal(!cancelAppointmentModal)}
                     >Cancel</button>
-                    {status === "Unverified" && <button className={UnavailableUnverifiedTimeslotsStyle}>Verify</button>}
+                    
                     
                 </div>
                 {mailModal && <MailModal name={name} closeModal={closeModal} />}

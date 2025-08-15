@@ -19,7 +19,7 @@ router.get('/verified-clients', async (req, res) => {
         verified: client.verified // comes from the new column
       }));
   
-      res.status(200).json(clients);
+      res.status(200).json({count: clients.length, clients: clients});
     } catch (err) {
       console.error("❌ Error fetching verified clients:", err.message);
       res.status(500).json({ error: "Server error fetching verified clients" });

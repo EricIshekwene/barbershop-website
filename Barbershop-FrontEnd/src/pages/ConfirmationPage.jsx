@@ -10,8 +10,19 @@ export default function ConfirmationPage() {
   const location = useLocation();
   const state = location.state;
   const toPgTime = (t) => {
-    // Make sure it's a 2-digit hour with :00:00
-    return String(t).padStart(2, '0') + ':00:00';
+    const s = String(t ?? '').trim();
+    if (!s) throw new Error('Bad time: empty');
+  
+    // "1" or "14" -> "01:00:00" / "14:00:00"
+    if (/^\d{1,2}$/.test(s)) return s.padStart(2, '0') + ':00:00';
+  
+    // "01:00" or "14:30" -> "01:00:00" / "14:30:00"
+    if (/^\d{1,2}:\d{2}$/.test(s)) return s + ':00';
+  
+    // already "HH:MM:SS"
+    if (/^\d{1,2}:\d{2}:\d{2}$/.test(s)) return s;
+  
+    throw new Error(`Bad time format: ${s}`);
   };
   // Guard clause: Redirect if state is missing
   useEffect(() => {
@@ -22,7 +33,15 @@ export default function ConfirmationPage() {
   
   if (!state) return null;
   
-
+  const formatDisplayTime = (t) => {
+    if (!t && t !== 0) return '';                   // undefined/null/'' -> ''
+    const s = String(t).trim();
+  
+    if (/^\d{1,2}$/.test(s)) return s.padStart(2,'0') + ':00'; // "1" -> "01:00"
+    if (/^\d{1,2}:\d{2}$/.test(s)) return s;                    // "01:00" -> "01:00"
+    if (/^\d{1,2}:\d{2}:\d{2}$/.test(s)) return s.slice(0,5);   // "01:00:00" -> "01:00"
+    return s;                                                   // fallback: just show whatever it is
+  };
   const [Error, setError] = useState("");
   const [userConfirmationCode, setUserConfirmationCode] = useState("");
   const { name, email, date, time, service, confirmationCode } = state;
@@ -30,7 +49,7 @@ export default function ConfirmationPage() {
   const handleConfirmationSubmit = async (e) => {
     e.preventDefault();
     if (String(userConfirmationCode).trim() === String(confirmationCode).trim()) {
-      navigate('/confirmed', { state: { name, email, date, time, service } });
+      
       //verify email
       
       const verifyEmail = await fetch('http://localhost:3000/api/confirmation/verify-email', {
@@ -51,7 +70,12 @@ export default function ConfirmationPage() {
           body: JSON.stringify({ name, email, date, time: pgTime, service }),
         });
         if (addBooking.ok) {
-          navigate('/confirmed', { state: { name, email, date, time, service } });
+          const payload = await addBooking.json().catch(() => ({}));
+          if (payload.booking) {
+            // persist for refresh-safe confirmed page
+            sessionStorage.setItem('booking', JSON.stringify(payload.booking));
+          }
+          navigate('/confirmed', { state: payload.booking || { name, email, date, time, service } });
         } else {
           setError("Failed to add booking");
         }
@@ -77,7 +101,7 @@ export default function ConfirmationPage() {
           <div className="text-sm text-white text-center raleway-regular mt-2">
             <p><span className="text-[#DDCA7D] font-bold">Name:</span> {name}</p>
             <p><span className="text-[#DDCA7D] font-bold">Email:</span> {email}</p>
-            <p><span className="text-[#DDCA7D] font-bold">Booking:</span> {date} @ {time}:00</p>
+            <p><span className="text-[#DDCA7D] font-bold">Booking:</span> {date} @ {formatDisplayTime(time)}</p>
             <p><span className="text-[#DDCA7D] font-bold">Service:</span> {service}</p>
           </div>
 

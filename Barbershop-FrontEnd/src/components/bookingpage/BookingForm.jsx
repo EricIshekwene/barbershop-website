@@ -162,6 +162,7 @@ export default function BookingForm({ service, date, time }) {
                 } else {
                     const error = await res.json();
                     console.error("❌ Email error:", error.error || error.message || "Failed to send email");
+                    setFormError("Network error — please try again.");
                 }
 
 
@@ -194,7 +195,7 @@ export default function BookingForm({ service, date, time }) {
                     console.error("❌ Error adding booking:", errData);
                   }
             } else {
-                const error = await res.json();
+                const error = await error.json();
                 setFormError(error.error || error.message || "An error occurred. Please try again.");
                 console.error("❌ Error:", error.message);
             }

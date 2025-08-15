@@ -7,7 +7,13 @@ import { FaChevronDown } from "react-icons/fa";
 export default function AdminAppointments() {
     const [showUpcomingAppointments, setShowUpcomingAppointments] = useState(true);
     const [showPastAppointments, setShowPastAppointments] = useState(false);
-
+    const [upcomingAppointmentCount, setUpcomingAppointmentCount] = useState(0);
+    const [pastAppointmentCount, setPastAppointmentCount] = useState(0);
+    const AvailableTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-white/10 backdrop-blur-sm border border-white/20 text-[#DDCA7D] hover:bg-white/20 hover:shadow-md transition-all duration-300 focus:outline-none"
+    const UnavailableVerifiedTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-red-500/20 backdrop-blur-sm border border-red-400/30 text-red-300 opacity-70 hover:bg-red-500/30 transition-all duration-300 focus:outline-none"
+    const UnavailableUnverifiedTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-yellow-400/10 backdrop-blur-sm border border-yellow-300 text-yellow-300 hover:bg-yellow-400/20 hover:shadow transition-all duration-30 focus:outline-none"
+    const UpdateTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn  bg-green-500/20 backdrop-blur-sm border border-green-400 text-green-300 hover:bg-green-500/30 hover:shadow-md transition-all duration-300 focus:outline-none "
+    
     // Handler for toggling Upcoming Appointments
     const handleToggleUpcoming = () => {
         setShowUpcomingAppointments(!showUpcomingAppointments);
@@ -19,6 +25,7 @@ export default function AdminAppointments() {
         setShowPastAppointments(!showPastAppointments);
 
     };
+    
 const fakeData = [
     {
         name: "John Doe",
@@ -26,7 +33,7 @@ const fakeData = [
         date: "10/10/2025",
         service: "Low Taper $20",
         instagram: "john_doe",
-        status: "Unverified",
+        
         bookingStatus: "Pending"
     },
     {
@@ -35,7 +42,7 @@ const fakeData = [
         date: "10/10/2025",
         service: "Mid Fade $25",
         instagram: "janesmith",
-        status: "Verified",
+
         bookingStatus: "Approved"
     },
     {
@@ -44,7 +51,6 @@ const fakeData = [
         date: "10/10/2025",
         service: "High Fade $30",
         instagram: "alexlee",
-        status: "Verified",
         bookingStatus: "Pending"
     }
 ]
@@ -55,6 +61,9 @@ const fakeData = [
                 
             >
                 <p className='text-2xl raleway-bold text-white'>Upcoming Appointments</p>
+                <div className={AvailableTimeslotsStyle}>
+                        <p>{upcomingAppointmentCount}</p>
+                    </div>
                 <FaChevronDown
                     className={`text-white text-2xl transition-transform duration-200 ${showUpcomingAppointments ? 'rotate-90' : ''}`}
                     onClick={handleToggleUpcoming}
@@ -64,7 +73,7 @@ const fakeData = [
             {showUpcomingAppointments && (
                 <>
                     {fakeData.map((item, index) => (
-                        <UpcomingAppointment key={index} name={item.name} time={item.time} date={item.date} service={item.service} instagram={item.instagram} status={item.status} bookingStatus={item.bookingStatus} />
+                        <UpcomingAppointment key={index} name={item.name} time={item.time} date={item.date} service={item.service} instagram={item.instagram} bookingStatus={item.bookingStatus} />
                     ))}
                 </>
             )}
@@ -73,6 +82,9 @@ const fakeData = [
                 
             >
                 <p className='text-2xl raleway-bold text-white'>Past Appointments</p>
+                <div className={AvailableTimeslotsStyle}>
+                        <p>{pastAppointmentCount}</p>
+                    </div>
                 <FaChevronDown
                     className={`text-white text-2xl transition-transform duration-200 ${showPastAppointments ? 'rotate-90' : ''}`}
                     onClick={handleTogglePast}
@@ -82,7 +94,7 @@ const fakeData = [
             {showPastAppointments && (
                 <>
                     {fakeData.map((item, index) => (
-                        <PastAppointments key={index} name={item.name} time={item.time} date={item.date} service={item.service} instagram={item.instagram} status={item.status} bookingStatus={item.bookingStatus} />
+                        <PastAppointments key={index} name={item.name} time={item.time} date={item.date} service={item.service} instagram={item.instagram} bookingStatus={item.bookingStatus} />
                     ))}
                 </>
             )}

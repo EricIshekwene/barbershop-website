@@ -18,8 +18,17 @@ export default function Confirmed() {
     }
   }, [state]);
 
+  const formatDisplayTime = (t) => {
+    if (!t && t !== 0) return '';
+    const s = String(t).trim();
+    if (/^\d{1,2}$/.test(s)) return s.padStart(2, '0') + ':00'; // "1" -> "01:00"
+    if (/^\d{1,2}:\d{2}$/.test(s)) return s;                    // "01:00"
+    if (/^\d{1,2}:\d{2}:\d{2}$/.test(s)) return s.slice(0, 5);   // "01:00:00" -> "01:00"
+    return s;
+  };
+
+
   useEffect(() => {
-    // if neither state nor saved booking, bounce back
     const hasSaved = !!sessionStorage.getItem("booking");
     if (!state && !hasSaved) {
       navigate("/booking", { replace: true });
@@ -43,8 +52,33 @@ export default function Confirmed() {
     instagram = "",
     date = "",
     time = "",
-    service = ""
+    service = "",
+    service_type = ""
   } = data;
+
+  const formatDisplayDate = (d) => {
+    if (!d) return '';
+    if (typeof d === 'string' && d.includes('T')) {
+      // ISO -> local date string
+      const dt = new Date(d);
+      return dt.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+    }
+    // already "YYYY-MM-DD" from DB
+    return d;
+  };
+
+  // when preparing values:
+  const rawDate = data.date || data.appointment_date || '';
+  const displayDate = formatDisplayDate(rawDate);
+
+
+  // Support both shapes from state or DB
+
+  const rawTime = data.time || data.appointment_time || '';
+  const displayTime = formatDisplayTime(rawTime);
+  const displayDateSafe = displayDate || '(date pending)';
+  const displayTimeSafe = displayTime || '(time pending)';
+  const displayService = service || service_type || '(service)';
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-6">
@@ -57,7 +91,7 @@ export default function Confirmed() {
                 <p className="text-sm text-white text-center raleway-regular">{name}</p>
                 <p className="text-sm text-white text-center raleway-regular">{email}</p>
                 <p className="text-sm text-white text-center raleway-regular">
-                  {service} on {date} @ {time}:00
+                  {displayService} on {displayDateSafe} @ {displayTimeSafe}
                 </p>
               </div>
             </>
