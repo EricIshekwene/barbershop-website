@@ -7,20 +7,31 @@ const AvailableTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold mont
     const UnavailableUnverifiedTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-yellow-400/10 backdrop-blur-sm border border-yellow-300 text-yellow-300 hover:bg-yellow-400/20 hover:shadow transition-all duration-30 focus:outline-none"
     const UpdateTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-green-500/20 backdrop-blur-sm border border-green-400 text-green-300 hover:bg-green-500/30 hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:ring-offset-1"
     
-export default function PastAppointments({name, time, date, service, instagram, bookingStatus}) {
+export default function PastAppointments({name, time, date, service, instagram, bookingStatus, status}) {
     const [mailModal, setMailModal] = useState(false)
     const closeModal = () => {
         setMailModal(false)
     }
+    const formatDate = (isoString) => {
+        const d = new Date(isoString);
+        return d.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric"
+        });
+      };
+      const formatTime = (timeStr) =>
+        timeStr ? timeStr.slice(0,5) : "";
     return (
         <div className='flex flex-row justify-start items-start bg-white/10  border border-white/20 rounded-lg p-4 gap-4'>
             <div className='flex flex-col gap-1'>
                     <div className='flex flex-row items-center gap-2'>
                 <p className='text-white raleway-bold text-4xl'>{name}</p>
+                {status === true && <button className={UpdateTimeslotsStyle} >  <TiTick className='text-green-300 text-xl'/> </button> }
                 </div>
                 <div className='flex flex-col gap-1'>
-                <p className='text-white text-xs raleway-regular'>{time}</p>
-                <p className='text-white text-xs raleway-regular'>{date}</p>
+                <p className='text-white text-xs raleway-regular'>{formatTime(time)}</p>
+                <p className='text-white text-xs raleway-regular'>{formatDate(date)}</p>
                 <p className='text-white text-xs raleway-regular'>{service}</p>
                 </div>
             </div>

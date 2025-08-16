@@ -5,7 +5,7 @@ const getAvailabilityRoutes = require('./routes/getAvailability');
 const submitFormRoutes = require('./routes/submitForm');
 const confirmationRoutes = require('./routes/confirmation');
 const clientsRoutes = require('./routes/clients');
-
+const appointmentRoutes = require('./routes/appointment');
 require('dotenv').config();
 
 const app = express();
@@ -21,6 +21,7 @@ app.use('/api/admin', getAvailabilityRoutes);  // Base path for admin routes
 app.use('/api/client', submitFormRoutes);  // Base path for client routes
 app.use('/api/confirmation', confirmationRoutes);  // Base path for confirmation routes
 app.use('/api/admin', clientsRoutes);  // Base path for clients routes
+app.use('/api/admin', appointmentRoutes);  // Base path for appointment routes
 
 app.listen(PORT, HOST, () => {
     console.log(`Server running:
