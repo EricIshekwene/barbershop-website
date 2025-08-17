@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function CancelAppointment({ name, date, time, closeModal }) {
+export default function ApproveAppointment({ name, date, time, closeModal }) {
   const AvailableTimeslotsStyle =
     "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-white/10 backdrop-blur-sm border border-white/20 text-[#DDCA7D] hover:bg-white/20 hover:shadow-md transition-all duration-300 focus:outline-none";
   const UnavailableVerifiedTimeslotsStyle =
@@ -19,18 +19,19 @@ export default function CancelAppointment({ name, date, time, closeModal }) {
       >
         <div className="flex flex-col gap-6 justify-center items-center">
           <p className="bg-white/10 text-white text-center focus:outline-none raleway-regular border border-white/20 rounded-lg p-2 w-full m-4">
-            Are you sure you want to cancel <span className="text-[#DDCA7D]">{name}</span> on <span className="text-[#DDCA7D]">{date}</span> at <span className="text-[#DDCA7D]">{time}</span>?
+            Are you sure you want to approve <span className="text-[#DDCA7D]">{name}</span> on <span className="text-[#DDCA7D]">{date}</span> at <span className="text-[#DDCA7D]">{time}</span>?
           </p>
           <div className="flex flex-row justify-center items-center gap-4 w-full">
-            <button onClick={closeModal} className={UnavailableVerifiedTimeslotsStyle}>
+            <button onClick={closeModal} className={UnavailableUnverifiedTimeslotsStyle}>
               Go Back
             </button>
             <button onClick={() => {
-              // Add your cancellation logic here
+              // Add your approval logic here
               closeModal();
-            }} className={UnavailableUnverifiedTimeslotsStyle}>
-              Cancel Appointment
+            }} className={AvailableTimeslotsStyle}>
+              Approve Appointment
             </button>
+            
           </div>
         </div>
       </div>

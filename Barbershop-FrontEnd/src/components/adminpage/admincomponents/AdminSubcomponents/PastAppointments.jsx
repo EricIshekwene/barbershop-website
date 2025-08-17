@@ -36,7 +36,7 @@ export default function PastAppointments({name, time, date, service, instagram, 
                 </div>
             </div>
             <div className='flex flex-row items-center  rounded-lg p-2 gap-4 ml-auto self-center'>
-                <div className='flex flex-row items-center gap-1'>
+                <div onClick={() => window.open(`https://www.instagram.com/${instagram.replace(/^@/, '')}`, '_blank')}  className='flex flex-row items-center gap-1 cursor-pointer'>
                         <FaInstagram className='text-[#DDCA7D] text-xl'/>
                         <p className='text-[#DDCA7D] text-xl raleway-regular'>{instagram}</p>
                     </div>

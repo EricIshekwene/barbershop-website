@@ -31,7 +31,6 @@ export default function MailModal({ name, closeModal }) {
           className="bg-white/10 focus:outline-none text-[#DDCA7D] raleway-regular border border-white/20 rounded-lg p-2 w-full h-32 resize-none mb-4"
         />
         <div className="flex flex-row justify-end items-center gap-4 w-full">
-          <button className={AvailableTimeslotsStyle}>Payment Reminder</button>
           <button className={UnavailableUnverifiedTimeslotsStyle} onClick={closeModal}>
             Cancel
           </button>
