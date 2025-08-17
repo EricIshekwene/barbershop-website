@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { FaInstagram, FaChevronDown } from "react-icons/fa";
 import UpcomingAppointment from './AdminSubcomponents/UpcomingAppointment';
 import PastAppointments from './AdminSubcomponents/PastAppointments';
@@ -30,29 +30,26 @@ export default function AdminAppointments() {
   ];
 
   // Fetch appointments
-  useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        const res = await fetch("http://localhost:3000/api/admin/appointments", {
-          headers: { Accept: "application/json" },
-        });
-
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          throw new Error(err.message || `HTTP ${res.status}`);
-        }
-
-        const data = await res.json();
-        setPastAppointments(data.pastAppointments || []);
-        setUpcomingAppointments(data.upcomingAppointments || []);
-      } catch (err) {
-        console.error("❌ Error fetching appointments:", err);
-        setError(err.message || "Failed to load appointments");
+  const fetchAppointments = useCallback(async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/admin/appointments", {
+        headers: { Accept: "application/json" },
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || `HTTP ${res.status}`);
       }
-    };
-
-    fetchAppointments();
+      const data = await res.json();
+      setPastAppointments(data.pastAppointments || []);
+      setUpcomingAppointments(data.upcomingAppointments || []);
+      setError(null);
+    } catch (err) {
+      console.error("❌ Error fetching appointments:", err);
+      setError(err.message || "Failed to load appointments");
+    }
   }, []);
+
+  useEffect(() => { fetchAppointments(); }, [fetchAppointments]);
 
   // Helpers for search filtering
   const norm = (v) => (v ?? "").toString().toLowerCase();
@@ -136,6 +133,7 @@ export default function AdminAppointments() {
             filteredUpcoming.map((item, index) => (
               <UpcomingAppointment
                 key={index}
+                email={item.email}
                 name={item.name}
                 time={item.time}
                 date={item.date}
@@ -143,6 +141,7 @@ export default function AdminAppointments() {
                 instagram={item.instagram}
                 bookingStatus={item.bookingStatus}
                 status={item.status}
+                refreshAppointments={fetchAppointments}
               />
             ))
           ) : (

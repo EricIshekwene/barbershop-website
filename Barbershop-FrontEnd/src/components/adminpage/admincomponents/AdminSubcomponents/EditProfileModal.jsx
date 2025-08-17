@@ -2,9 +2,9 @@ import React from 'react'
 import { TiTick } from "react-icons/ti";
 import { ImCross } from "react-icons/im";
 import { useState } from 'react';
-import { toast } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
-export default function EditProfileModal({ closeModal, client: initialClient }) {
+export default function EditProfileModal({ closeModal, client: initialClient, onUpdateSuccess }) {
   const [client, setClient] = useState(
     initialClient || { name: "", phone: "", email: "", status: false, instagram: "" }
   );
@@ -20,7 +20,34 @@ export default function EditProfileModal({ closeModal, client: initialClient }) 
   const UnavailableUnverifiedTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-yellow-400/10 backdrop-blur-sm border border-yellow-300 text-yellow-300 hover:bg-yellow-400/20 hover:shadow transition-all duration-30 focus:outline-none"
   const UpdateTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn  bg-green-500/20 backdrop-blur-sm border border-green-400 text-green-300 hover:bg-green-500/30 hover:shadow-md transition-all duration-300 focus:outline-none "
 
+  const validateClient = (client) => {
+    // Name: only letters + spaces (first and last)
+    const nameRegex = /^[A-Za-z]+(?: [A-Za-z]+)+$/;
+    if (!nameRegex.test(client.name.trim())) {
+      return "Name must contain first and last, letters only";
+    }
+  
+    // Phone: exactly 10 digits
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(client.phone)) {
+      return "Phone must be a valid 10-digit number";
+    }
+  
+    // Instagram: 1–30 chars, letters/numbers/._ allowed, no @
+    const instaRegex = /^(?!.*\.\.)(?!.*\.$)[a-zA-Z0-9._]{1,30}$/;
+    if (!instaRegex.test(client.instagram)) {
+      return "Instagram must be 1–30 chars, letters/numbers/._ only, no @";
+    }
+  
+    return null; 
+  };
+  
   const handleUpdate = async () => {
+    const validationError = validateClient(client);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
     try {
       const response = await fetch(`http://localhost:3000/api/admin/update-client`, {
         method: 'PATCH',
@@ -35,6 +62,7 @@ export default function EditProfileModal({ closeModal, client: initialClient }) 
       const data = await response.json();
       console.log("data", data);
       toast.success("Client updated successfully");
+      if (onUpdateSuccess) onUpdateSuccess();
       closeModal();
     } catch (error) {
       console.error("❌ Error updating client:", error);

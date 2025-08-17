@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import AdminTitle from './admincomponents/AdminTitle';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+
 import { FaChevronDown } from "react-icons/fa";
 import { MdModeEditOutline, MdDelete, MdEmail } from "react-icons/md";
 import ClientMailModal from './admincomponents/AdminSubcomponents/ClientMailModal';
 import EditProfileModal from './admincomponents/AdminSubcomponents/EditProfileModal';
 
 const fakeClients = [
-  { name: "John Doe",   phone: "(555) 123-4567", email: "john.doe@email.com",   instagram: "@johndoe", verified: true  },
+  { name: "John Doe", phone: "(555) 123-4567", email: "john.doe@email.com", instagram: "@johndoe", verified: true },
   { name: "Jane Smith", phone: "(555) 987-6543", email: "jane.smith@email.com", instagram: "@janesmith", verified: false },
   { name: "Carlos Rivera", phone: "(555) 222-3333", email: "carlos.rivera@email.com", instagram: "@carlosr", verified: true }
 ];
@@ -16,6 +16,7 @@ export default function AdminClients() {
   const [selectedClient, setSelectedClient] = useState(null);
   const [error, setError] = useState('');
   const [clients, setClients] = useState([]);
+  
   const [mailModal, setMailModal] = useState(false);
   const [editProfileModal, setEditProfileModal] = useState(false);
   const [query, setQuery] = useState(""); // 🔎 search-by-name
@@ -29,45 +30,45 @@ export default function AdminClients() {
   const closeModal = () => { setMailModal(false); setEditProfileModal(false); };
   const toEditPayload = (c) => ({
     name: c?.name ?? "",
-    phone: (c?.phone ?? "").replace(/\D/g, ""),         
+    phone: (c?.phone ?? "").replace(/\D/g, ""),
     email: c?.email ?? "",
-    instagram: (c?.instagram ?? "").replace(/^@/, ""), 
-    status: !!c?.verified, 
+    instagram: (c?.instagram ?? "").replace(/^@/, ""),
+    status: !!c?.verified,
   });
-  useEffect(() => {
-    const fetchClients = async () => {
-      try {
-        const res = await fetch('http://localhost:3000/api/admin/verified-clients', {
-          headers: { Accept: 'application/json' },
-        });
+  const fetchClients = useCallback(async () => {
+    try {
+      const res = await fetch('http://localhost:3000/api/admin/verified-clients', {
+        headers: { Accept: 'application/json' },
+      });
 
-        const contentType = res.headers.get('content-type') || '';
-        const bodyText = await res.text();
+      const contentType = res.headers.get('content-type') || '';
+      const bodyText = await res.text();
 
-        if (!res.ok) {
-          if (contentType.includes('application/json')) {
-            const err = JSON.parse(bodyText);
-            throw new Error(err.error || `HTTP ${res.status}`);
-          } else {
-            throw new Error(`HTTP ${res.status}. Non-JSON response: ${bodyText.slice(0, 120)}...`);
-          }
+      if (!res.ok) {
+        if (contentType.includes('application/json')) {
+          const err = JSON.parse(bodyText);
+          throw new Error(err.error || `HTTP ${res.status}`);
+        } else {
+          throw new Error(`HTTP ${res.status}. Non-JSON response: ${bodyText.slice(0, 120)}...`);
         }
-
-        if (!contentType.includes('application/json')) {
-          throw new Error(`Expected JSON but got: ${contentType}. Snippet: ${bodyText.slice(0, 120)}...`);
-        }
-
-        const data = JSON.parse(bodyText);
-        setClients(Array.isArray(data.clients) ? data.clients : []);
-        setError('');
-      } catch (err) {
-        console.error('❌ Error fetching clients:', err);
-        setError(err.message || 'Failed to fetch clients');
       }
-    };
 
-    fetchClients();
+      if (!contentType.includes('application/json')) {
+        throw new Error(`Expected JSON but got: ${contentType}. Snippet: ${bodyText.slice(0, 120)}...`);
+      }
+
+      const data = JSON.parse(bodyText);
+      setClients(Array.isArray(data.clients) ? data.clients : []);
+      setError('');
+    } catch (err) {
+      console.error('❌ Error fetching clients:', err);
+      setError(err.message || 'Failed to fetch clients');
+    }
   }, []);
+
+  useEffect(() => {
+    fetchClients();
+  }, [fetchClients]);
 
   // 🔁 Data source + filtering (NAME ONLY)
   const clientSource = clients.length ? clients : fakeClients;
@@ -82,7 +83,7 @@ export default function AdminClients() {
 
   return (
     <div className='flex flex-col bg-black'>
-      <div className='flex flex-col bg-black m-8 mt-4 p-4 rounded-lg gap-4 border-1 border-white/20'>
+      <div className='flex flex-col bg-black m-8 mt-4 p-4 rounded-lg gap-4 border border-white/20'>
 
         <div className='flex flex-row items-center gap-2'>
           <p className='text-2xl raleway-bold text-white'>Clients</p>
@@ -136,7 +137,7 @@ export default function AdminClients() {
         {/* Rows */}
         {showClients && (shown ? (
           filteredClients.map((client, idx) => (
-           
+
             <div
               key={idx}
               className="grid grid-cols-6 bg-white/5 border border-white/10 rounded-lg p-4 gap-5 font-medium text-[#DDCA7D] raleway-regular items-center"
@@ -144,12 +145,20 @@ export default function AdminClients() {
               <div>{client.name || "N/A"}</div>
               <div>{client.phone || "N/A"}</div>
               <div>{client.email || "N/A"}</div>
-              <div className='cursor-pointer' onClick={() => window.open(`https://www.instagram.com/${client.instagram.replace(/^@/, '')}`, '_blank')}>{client.instagram || "N/A"}</div>
+              <div
+                className='cursor-pointer'
+                onClick={() => {
+                  const ig = (client.instagram || '').replace(/^@/, '');
+                  if (ig) window.open(`https://www.instagram.com/${ig}`, '_blank');
+                }}
+              >
+                {client.instagram || 'N/A'}
+              </div>
               <div>
                 {client.verified ? (
                   <span className="text-green-400 font-bold">Yes</span>
                 ) : (
-                  <span className="text-red-400 font-bold">No</span> 
+                  <span className="text-red-400 font-bold">No</span>
                 )}
               </div>
 
@@ -181,11 +190,16 @@ export default function AdminClients() {
       </div>
 
       {mailModal && (
-        <ClientMailModal name={selectedClient ? selectedClient.name : "Everyone"} closeModal={closeModal} />
+        <ClientMailModal closeModal={closeModal} />
       )}
       {editProfileModal && (
-        <EditProfileModal client={selectedClient} closeModal={closeModal} />
+        <EditProfileModal
+          client={selectedClient}
+          closeModal={closeModal}
+          onUpdateSuccess={fetchClients}   
+        />
       )}
+
     </div>
   );
 }

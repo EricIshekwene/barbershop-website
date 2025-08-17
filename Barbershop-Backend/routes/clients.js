@@ -147,4 +147,130 @@ router.post('/mail-all-clients', async (req, res) => {
   }
 });
 
+router.patch('/approve-appointment', async (req, res) => {
+  try {
+    const { name, email, date, time, service } = req.body;
+
+    if (!name || !email || !date || !time || !service) {
+      return res.status(400).json({ error: "name, email, date, time, and service are required" });
+    }
+
+    const result = await pool.query(
+      `UPDATE appointments
+       SET status = 'approved'
+       WHERE name = $1 AND email = $2 AND appointment_date = $3 AND appointment_time = $4 AND service_type = $5`,
+      [name, email, date, time, service]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "No matching appointment found to approve" });
+    }
+
+    // Format date and time nicely
+    const prettyDate = new Date(date).toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+
+    // assume `time` is like "15:00:00"
+    const [hh = "0", mm = "0"] = time.split(":");
+    const dt = new Date(date);
+    dt.setHours(parseInt(hh, 10), parseInt(mm, 10), 0, 0);
+    const prettyTime = dt.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+
+    // Try sending the email
+    try {
+      const subject = "Your Appointment Has Been Approved ✅";
+      const message = `Hi ${name},\n\nYour appointment for "${service}" on ${prettyDate} at ${prettyTime} has been approved.\n\nWe look forward to seeing you!\n\n- Barbershop`;
+
+      await transporter.sendMail({
+        from: `"Barbershop" <${process.env.EMAIL_USER}>`,
+        to: email,
+        subject,
+        text: message,
+        html: `<p>Hi ${name},</p>
+               <p>Your appointment for <strong>${service}</strong> on <strong>${prettyDate}</strong> at <strong>${prettyTime}</strong> has been <span style="color:green;font-weight:bold;">approved</span>.</p>
+               <p>We look forward to seeing you!</p>
+               <p>- Barbershop</p>`,
+      });
+
+      return res.status(200).json({ message: "Appointment approved and email sent successfully" });
+    } catch (emailErr) {
+      console.error("⚠️ Appointment approved but email failed:", emailErr.message);
+      return res.status(200).json({
+        message: "Appointment approved, but failed to send email",
+        emailError: emailErr.message
+      });
+    }
+
+  } catch (err) {
+    console.error("❌ Error approving appointment:", err.message);
+    return res.status(500).json({ error: "Server error approving appointment" });
+  }
+});
+
+router.delete('/cancel-appointment', async (req, res) => {
+  try {
+    const { name, email, date, time, service } = req.body;
+
+    if (!name || !email || !date || !time || !service) {
+      return res.status(400).json({ error: "name, email, date, time, and service are required" });
+    }
+
+    const result = await pool.query(
+      `DELETE FROM appointments
+       WHERE name = $1 AND email = $2 AND appointment_date = $3 AND appointment_time = $4 AND service_type = $5`,
+      [name, email, date, time, service]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "No matching appointment found to cancel" });
+    }
+
+    // Format date and time nicely
+    const prettyDate = new Date(date).toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+
+    const [hh = "0", mm = "0"] = time.split(":");
+    const dt = new Date(date);
+    dt.setHours(parseInt(hh, 10), parseInt(mm, 10), 0, 0);
+    const prettyTime = dt.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+
+    // Try sending the email
+    try {
+      const subject = "Your Appointment Has Been Cancelled ❌";
+      const message = `Hi ${name},\n\nYour appointment for "${service}" on ${prettyDate} at ${prettyTime} has been cancelled.\n\nIf this was a mistake, please reschedule.\n\n- Barbershop`;
+
+      await transporter.sendMail({
+        from: `"Barbershop" <${process.env.EMAIL_USER}>`,
+        to: email,
+        subject,
+        text: message,
+        html: `<p>Hi ${name},</p>
+               <p>Your appointment for <strong>${service}</strong> on <strong>${prettyDate}</strong> at <strong>${prettyTime}</strong> has been <span style="color:red;font-weight:bold;">cancelled</span>.</p>
+               <p>If this was a mistake, please reschedule.</p>
+               <p>- Barbershop</p>`,
+      });
+
+      return res.status(200).json({ message: "Appointment cancelled and email sent successfully" });
+    } catch (emailErr) {
+      console.error("⚠️ Appointment cancelled but email failed:", emailErr.message);
+      return res.status(200).json({
+        message: "Appointment cancelled, but failed to send email",
+        emailError: emailErr.message
+      });
+    }
+
+  } catch (err) {
+    console.error("❌ Error cancelling appointment:", err.message);
+    return res.status(500).json({ error: "Server error cancelling appointment" });
+  }
+});
+
 module.exports = router;
