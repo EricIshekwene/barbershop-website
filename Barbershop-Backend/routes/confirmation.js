@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../db/pool');
-//const { sendConfirmationEmail } = require('../mailer');
+
 
 router.post('/send-confirmation', async (req, res) => {
     const { name, email } = req.body;

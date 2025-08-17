@@ -1,5 +1,5 @@
 const { Pool } = require('pg');
-const pool = require('./db/pool'); // configure with your .env or directly
+const pool = require('../db/pool'); // configure with your .env or directly
 
 const insertHourlySlots = async () => {
   const startDate = new Date();
