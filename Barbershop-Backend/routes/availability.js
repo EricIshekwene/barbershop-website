@@ -3,62 +3,45 @@ const router = express.Router();
 const pool = require('../db/pool');
 
 router.get('/getAvailability', async (req, res) => {
-    console.log("getAvailability route hit");
+  console.log("getAvailability route hit");
   try {
     const result = await pool.query(`
-      SELECT date, EXTRACT(HOUR FROM time) AS hour, is_available
-      FROM available_slots
-      WHERE date BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '14 days'
-      ORDER BY date, hour;
+      SELECT
+        s.date,
+        EXTRACT(HOUR FROM s.time) AS hour,
+        CASE
+          WHEN EXISTS (
+            SELECT 1
+            FROM appointments a
+            WHERE a.appointment_date = s.date
+              AND a.appointment_time = s.time
+              AND (a.status IS NULL OR a.status <> 'cancelled')
+          ) THEN 'booked'
+          WHEN s.is_available THEN 'available'
+          ELSE 'unavailable'
+        END AS status
+      FROM available_slots s
+      WHERE s.date BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '14 days'
+      ORDER BY s.date, hour;
     `);
 
-    const groupedAvailability = result.rows.reduce((acc, row) => {
-      const dateStr = row.date.toISOString().split('T')[0];
-      const time = Number(row.hour);
-      const status = row.is_available ? "available" : "unavailable";
-
-      let day = acc.find(item => item.date === dateStr);
-      if (!day) {
-        day = { date: dateStr, timeslots: [] };
-        acc.push(day);
-      }
-
-      day.timeslots.push({ time, status });
+    const grouped = result.rows.reduce((acc, row) => {
+      const dateStr = row.date.toISOString().split('T')[0]; // safe; DB date has no TZ
+      const hour = Number(row.hour);
+      let day = acc.find(d => d.date === dateStr);
+      if (!day) { day = { date: dateStr, timeslots: [] }; acc.push(day); }
+      day.timeslots.push({ time: hour, status: row.status }); // <- string now
       return acc;
     }, []);
 
-    // ✅ Log for debugging
-    console.log("📅 Sending availability (from DB):");
-   // console.dir(groupedAvailability, { depth: null });
-
-    // ✅ Send the real DB-transformed object
-    // Example structure of groupedAvailability:
-    /*
-    [
-      {
-        date: "2024-06-10",
-        timeslots: [
-          { time: 10, status: "available" },
-          { time: 11, status: "unavailable" },
-          // ...
-        ]
-      },
-      {
-        date: "2024-06-11",
-        timeslots: [
-          { time: 10, status: "available" },
-          // ...
-        ]
-      },
-      // ...
-    ]
-    */
-    res.json(groupedAvailability);
+    res.json(grouped);
+    console.log( "available slots", grouped[1].timeslots);
   } catch (err) {
     console.error("❌ Error fetching availability:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 router.post('/updateAvailability', async (req, res) => {
     console.log("updateAvailability route hit");

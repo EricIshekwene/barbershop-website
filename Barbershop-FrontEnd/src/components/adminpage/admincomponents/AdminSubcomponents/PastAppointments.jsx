@@ -7,7 +7,7 @@ const AvailableTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold mont
     const UnavailableUnverifiedTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-yellow-400/10 backdrop-blur-sm border border-yellow-300 text-yellow-300 hover:bg-yellow-400/20 hover:shadow transition-all duration-30 focus:outline-none"
     const UpdateTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-green-500/20 backdrop-blur-sm border border-green-400 text-green-300 hover:bg-green-500/30 hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:ring-offset-1"
     
-export default function PastAppointments({name, time, date, service, instagram, bookingStatus, status}) {
+export default function PastAppointments({name, time, date, service, instagram, bookingStatus, status, email}) {
     const [mailModal, setMailModal] = useState(false)
     const closeModal = () => {
         setMailModal(false)
@@ -45,7 +45,7 @@ export default function PastAppointments({name, time, date, service, instagram, 
                 >Mail</button>
                
             </div>
-            {mailModal && <MailModal name={"example"} closeModal={closeModal} />}
+            {mailModal && <MailModal name={name} email={email} closeModal={closeModal}  date={date} time={time} service={service} />}
         </div>
         
         

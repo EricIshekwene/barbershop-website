@@ -4,7 +4,7 @@ import { FaChevronDown } from "react-icons/fa";
 import { MdModeEditOutline, MdDelete, MdEmail } from "react-icons/md";
 import ClientMailModal from './admincomponents/AdminSubcomponents/ClientMailModal';
 import EditProfileModal from './admincomponents/AdminSubcomponents/EditProfileModal';
-
+import DeleteModal from './admincomponents/AdminSubcomponents/DeleteModal';
 const fakeClients = [
   { name: "John Doe", phone: "(555) 123-4567", email: "john.doe@email.com", instagram: "@johndoe", verified: true },
   { name: "Jane Smith", phone: "(555) 987-6543", email: "jane.smith@email.com", instagram: "@janesmith", verified: false },
@@ -16,18 +16,18 @@ export default function AdminClients() {
   const [selectedClient, setSelectedClient] = useState(null);
   const [error, setError] = useState('');
   const [clients, setClients] = useState([]);
-  
+
   const [mailModal, setMailModal] = useState(false);
   const [editProfileModal, setEditProfileModal] = useState(false);
   const [query, setQuery] = useState(""); // 🔎 search-by-name
-
+  const [deleteModal, setDeleteModal] = useState(false);
   const AvailableTimeslotsStyle =
     "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-white/10 backdrop-blur-sm border border-white/20 text-[#DDCA7D] hover:bg-white/20 hover:shadow-md transition-all duration-300 focus:outline-none";
   const UnavailableVerifiedTimeslotsStyle =
     "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-red-500/20 backdrop-blur-sm border border-red-400/30 text-red-300 opacity-70 hover:bg-red-500/30 transition-all duration-300 focus:outline-none";
 
   const handleToggleClients = () => setShowClients((v) => !v);
-  const closeModal = () => { setMailModal(false); setEditProfileModal(false); };
+  const closeModal = () => { setMailModal(false); setEditProfileModal(false); setDeleteModal(false);};
   const toEditPayload = (c) => ({
     name: c?.name ?? "",
     phone: (c?.phone ?? "").replace(/\D/g, ""),
@@ -134,53 +134,61 @@ export default function AdminClients() {
           />
         </div>
 
-        {/* Rows */}
-        {showClients && (shown ? (
-          filteredClients.map((client, idx) => (
+        {/* Rows container with scroll */}
+        {showClients && (
+          <div className="max-h-50 overflow-y-auto space-y-2 pr-1">
+            {shown ? (
+              filteredClients.map((client, idx) => (
+                <div
+                  key={idx}
+                  className="grid grid-cols-6 bg-white/5 border border-white/10 rounded-lg p-4 gap-5 font-medium text-[#DDCA7D] raleway-regular items-center"
+                >
+                  <div>{client.name || "N/A"}</div>
+                  <div>{client.phone || "N/A"}</div>
+                  <div>{client.email || "N/A"}</div>
+                  <div
+                    className="cursor-pointer"
+                    onClick={() => {
+                      const ig = (client.instagram || '').replace(/^@/, '');
+                      if (ig) window.open(`https://www.instagram.com/${ig}`, '_blank');
+                    }}
+                  >
+                    {client.instagram || 'N/A'}
+                  </div>
+                  <div>
+                    {client.verified ? (
+                      <span className="text-green-400 font-bold">Yes</span>
+                    ) : (
+                      <span className="text-red-400 font-bold">No</span>
+                    )}
+                  </div>
 
-            <div
-              key={idx}
-              className="grid grid-cols-6 bg-white/5 border border-white/10 rounded-lg p-4 gap-5 font-medium text-[#DDCA7D] raleway-regular items-center"
-            >
-              <div>{client.name || "N/A"}</div>
-              <div>{client.phone || "N/A"}</div>
-              <div>{client.email || "N/A"}</div>
-              <div
-                className='cursor-pointer'
-                onClick={() => {
-                  const ig = (client.instagram || '').replace(/^@/, '');
-                  if (ig) window.open(`https://www.instagram.com/${ig}`, '_blank');
-                }}
-              >
-                {client.instagram || 'N/A'}
-              </div>
-              <div>
-                {client.verified ? (
-                  <span className="text-green-400 font-bold">Yes</span>
-                ) : (
-                  <span className="text-red-400 font-bold">No</span>
-                )}
-              </div>
-
-              <div className="flex gap-2 justify-center">
-                <input
-                  type="checkbox"
-                  className="w-5 h-5 accent-[#DDCA7D] bg-white/10 border border-white/20 rounded focus:ring-2 focus:ring-[#DDCA7D]/50 transition-all duration-200"
-                />
-                <MdModeEditOutline
-                  className="text-white text-2xl cursor-pointer"
-                  onClick={() => {
-                    setSelectedClient(toEditPayload(client));
-                    setEditProfileModal(true);
-                  }}
-                />
-                <MdDelete className="text-red-500 text-2xl cursor-pointer" />
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-white/60 italic px-1">No matches.</p>
-        ))}
+                  <div className="flex gap-2 justify-center">
+                    <input
+                      type="checkbox"
+                      className="w-5 h-5 accent-[#DDCA7D] bg-white/10 border border-white/20 rounded focus:ring-2 focus:ring-[#DDCA7D]/50 transition-all duration-200"
+                    />
+                    <MdModeEditOutline
+                      className="text-white text-2xl cursor-pointer"
+                      onClick={() => {
+                        setSelectedClient(toEditPayload(client));
+                        setEditProfileModal(true);
+                      }}
+                    />
+                    <MdDelete className="text-red-500 text-2xl cursor-pointer"
+                      onClick={() => {
+                        setSelectedClient(toEditPayload(client));
+                        setDeleteModal(true);
+                      }}
+                    />
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-white/60 italic px-1">No matches.</p>
+            )}
+          </div>
+        )}
 
         {error && (
           <div className={UnavailableVerifiedTimeslotsStyle}>
@@ -196,10 +204,16 @@ export default function AdminClients() {
         <EditProfileModal
           client={selectedClient}
           closeModal={closeModal}
-          onUpdateSuccess={fetchClients}   
+          onUpdateSuccess={fetchClients}
         />
       )}
-
+      {deleteModal && (
+        <DeleteModal
+          client={selectedClient}
+          closeModal={closeModal}
+          onDeleteSuccess={fetchClients}
+        />
+      )}
     </div>
   );
 }

@@ -20,7 +20,9 @@ export default function UpcomingAppointment({ name, email, time, date, service, 
         setApproveAppointmentModal(false)
         refreshAppointments()
     }
-    const formatDate = (isoString) => {
+    const emergencyCutStyle = "flex flex-row justify-start items-start bg-red-500/10  border border-red-400/20 rounded-lg p-4 gap-4"
+    const regularCutStyle = "flex flex-row justify-start items-start bg-white/10  border border-white/20 rounded-lg p-4 gap-4"
+     const formatDate = (isoString) => {
         const d = new Date(isoString);
         return d.toLocaleDateString("en-US", {
             year: "numeric",
@@ -31,7 +33,7 @@ export default function UpcomingAppointment({ name, email, time, date, service, 
     const formatTime = (timeStr) =>
         timeStr ? timeStr.slice(0, 5) : "";
     return (
-        <div className='flex flex-row justify-start items-start bg-white/10  border border-white/20 rounded-lg p-4 gap-4'>
+        <div className={service === 'Low Taper' ? regularCutStyle : emergencyCutStyle}>
             <div className='flex flex-col gap-1'>
                 <div className='flex flex-row items-center gap-2'>
                     <p className='text-white raleway-bold text-4xl'>{name}</p>

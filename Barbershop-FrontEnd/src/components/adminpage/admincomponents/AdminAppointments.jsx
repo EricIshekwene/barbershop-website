@@ -19,15 +19,7 @@ export default function AdminAppointments() {
   const [upcomingQuery, setUpcomingQuery] = useState("");
   const [pastQuery, setPastQuery] = useState("");
 
-  // Fake data (fallback for upcoming list)
-  const fakeData = [
-    { name: "John Doe", time: "10:00 AM", date: "10/10/2025", service: "Low Taper $20", instagram: "john_doe", status: "Verified", bookingStatus: "Pending" },
-    { name: "Jane Smith", time: "11:00 AM", date: "10/10/2025", service: "Mid Fade $25", instagram: "janesmith", status: "Unverified", bookingStatus: "Approved" },
-    { name: "Alex Lee", time: "12:00 PM", date: "10/10/2025", service: "High Fade $30", instagram: "alexlee", status: "Unverified", bookingStatus: "Pending" },
-    { name: "John Doe", time: "10:00 AM", date: "10/10/2025", service: "Low Taper $20", instagram: "john_doe", status: "Verified", bookingStatus: "Pending" },
-    { name: "Jane Smith", time: "11:00 AM", date: "10/10/2025", service: "Mid Fade $25", instagram: "janesmith", status: "Unverified", bookingStatus: "Approved" },
-    { name: "Alex Lee", time: "12:00 PM", date: "10/10/2025", service: "High Fade $30", instagram: "alexlee", status: "Unverified", bookingStatus: "Pending" },
-  ];
+
 
   // Fetch appointments
   const fetchAppointments = useCallback(async () => {
@@ -58,11 +50,11 @@ export default function AdminAppointments() {
   };
 
   // Sources (with fallback for upcoming list)
-  const upcomingSource = upcomingAppointments.length ? upcomingAppointments : fakeData;
+  const upcomingSource = upcomingAppointments;
   const pastSource = pastAppointments;
 
   //const upcomingSource = fakeData;
-//const pastSource = fakeData;
+  //const pastSource = fakeData;
 
   // Filtered lists
   const filteredUpcoming = useMemo(
@@ -127,7 +119,7 @@ export default function AdminAppointments() {
       {showUpcomingAppointments && (
         <div
           className="max-h-[450px] overflow-y-auto pr-2 space-y-4 custom-scrollbar"
-          // If you want a hard cap of exactly 3 cards: style={{ maxHeight: 'calc(3 * 150px)' }}
+        // If you want a hard cap of exactly 3 cards: style={{ maxHeight: 'calc(3 * 150px)' }}
         >
           {filteredUpcoming.length ? (
             filteredUpcoming.map((item, index) => (
@@ -145,7 +137,9 @@ export default function AdminAppointments() {
               />
             ))
           ) : (
-            <p className="text-white/60 italic px-1">No matches.</p>
+            <p className="text-white/60 italic px-1">
+              {upcomingQuery ? "No matches." : "No upcoming appointments."}
+            </p>
           )}
         </div>
       )}
@@ -201,6 +195,7 @@ export default function AdminAppointments() {
                 instagram={item.instagram}
                 bookingStatus={item.bookingStatus}
                 status={item.status}
+                email={item.email}
               />
             ))
           ) : (

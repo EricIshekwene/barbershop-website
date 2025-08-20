@@ -13,6 +13,7 @@ export default function BookingForm({ service, date, time }) {
     const [phoneError, setPhoneError] = useState('');
     const [instagramError, setInstagramError] = useState('');
     const [formError, setFormError] = useState('');
+    const [reason, setReason] = useState('');
     function validateForm({ name, email, phone, instagram, time, date, service }, setErrors) {
         let hasError = false;
 
@@ -21,7 +22,8 @@ export default function BookingForm({ service, date, time }) {
             email: '',
             phone: '',
             instagram: '',
-            form: ''
+            form: '',
+            reason: ''
         };
 
         // Name
@@ -68,6 +70,12 @@ export default function BookingForm({ service, date, time }) {
             }
         }
 
+        // Reason
+        if (service === 'Emergency Cut' && !reason.trim()) {
+            errors.reason = 'Reason is required for emergency cuts';
+            hasError = true;
+        }
+
         // Time, Date, Service
         if (!time) {
             errors.form = 'Time is required';
@@ -94,7 +102,7 @@ export default function BookingForm({ service, date, time }) {
         e.preventDefault();
         console.log("handleSubmit hit");
         const isValid = validateForm(
-            { name, email, phone, instagram, time, date, service },
+            { name, email, phone, instagram, time, date, service, reason },
             (errors) => {
                 setNameError(errors.name);
                 setEmailError(errors.email);
@@ -113,7 +121,8 @@ export default function BookingForm({ service, date, time }) {
             instagram,
             time,
             date,
-            service
+            service,
+            reason
         };
         try {
             const res = await fetch('http://localhost:3000/api/client/addClient', {
@@ -126,6 +135,7 @@ export default function BookingForm({ service, date, time }) {
                     email,
                     phone,
                     instagram: instagram || null,
+                    reason: reason || null,
                 }),
             });
 
@@ -135,41 +145,44 @@ export default function BookingForm({ service, date, time }) {
 
                 //email the client a confirmation code
 
-                const emailRes = await fetch('http://localhost:3000/api/confirmation/send-confirmation', {
+                const emailRes = await fetch('http://localhost:3000/api/confirmation/mail-confirmation', {
                     method: 'POST',
                     headers: {
-                        "Content-Type": "application/json",
+                      "Content-Type": "application/json",
                     },
                     body: JSON.stringify({ name, email }),
-                });
-                if (emailRes.ok) {
+                  });
+                  
+                  if (emailRes.ok) {
                     const data = await emailRes.json();
-                    const confirmationCode = data.code;
+                    const confirmationCode = data.code; 
+                  
                     console.log("✅ Email sent. Confirmation code:", confirmationCode);
+                  
                     navigate('/confirmation', {
-                        state: {
-                            name,
-                            email,
-                            phone,
-                            instagram,
-                            date,
-                            time,
-                            service,
-                            confirmationCode
-                        }
-
+                      state: {
+                        name,
+                        email,
+                        phone,
+                        instagram,
+                        date,
+                        time,
+                        service,
+                        confirmationCode,
+                      },
                     });
-                } else {
-                    const error = await res.json();
+                  } else {
+                    const error = await emailRes.json(); // <- was res.json(), corrected to emailRes.json()
                     console.error("❌ Email error:", error.error || error.message || "Failed to send email");
                     setFormError("Network error — please try again.");
-                }
+                  }
+                  
 
 
 
             } else if (res.status === 200) {
                 console.log("✅ Client already exists and is verified");
-                const bookingState = { name, email, phone, instagram, date, time, service };
+                const bookingState = { name, email, phone, instagram, date, time, service, reason };
                 
                 
                 const pgTime = toPgTime(time);
@@ -178,7 +191,7 @@ export default function BookingForm({ service, date, time }) {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ name, email, date, time: pgTime, service }),
+                    body: JSON.stringify({ name, email, date, time: pgTime, service, status: "approved", reason: reason || null  }),
                 });
                 if (addBooking.ok) {
                     const payload = await addBooking.json();
@@ -253,6 +266,13 @@ export default function BookingForm({ service, date, time }) {
                         {date} @ {time}:00 || {service}
                     </p>
                 )}
+                {service === 'Emergency Cut' && <input
+                    type="text"
+                    placeholder="Reason for emergency cut"
+                    value={reason}
+                    onChange={e => setReason(e.target.value)}
+                    className="raleway-regular w-full p-2 rounded-md  border-white/20 text-[#DDCA7D]  backdrop-blur-sm focus:outline-none focus:ring-0"
+                />}
 
                 <button type="submit" className="w-full p-2 m-2  raleway-regular rounded-md  border-white/20 text-[#DDCA7D]  backdrop-blur-sm">Submit</button>
             </form>

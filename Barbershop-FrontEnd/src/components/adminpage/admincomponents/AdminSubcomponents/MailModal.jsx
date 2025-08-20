@@ -56,6 +56,7 @@ export default function MailModal({ name, email, closeModal, date, time, service
 
   const handleSend = async () => {
     try {
+      console.log(email, subject, message)
       if (!email || !subject.trim() || !message.trim()) {
         setError("Email, subject, and message are required");
         return;

@@ -16,7 +16,7 @@ function BookingPage() {
   return (
     <div className="min-h-screen bg-black">
       <BookingNav />
-      <BookingCard text="Low Taper" price="$10" text2="Emergency Cut" price2="$50" setService={setService} />
+      <BookingCard text="Low Taper" price="$30" text2="Emergency Cut" price2="$50" setService={setService} />
       <p className="text-white raleway-bold text-center text-2xl mt-5 font-bold">Select A Date & Time</p>
       <BookingCalender setDate={setDate}  setTime={setTime} />
       <BookingForm service={service} date={date} time={time}/>

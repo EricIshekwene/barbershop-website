@@ -273,4 +273,45 @@ router.delete('/cancel-appointment', async (req, res) => {
   }
 });
 
+router.delete('/delete-client', async (req, res) => {
+  const { client } = req.body || {};
+  if (!client?.email) return res.status(400).json({ error: 'client email required' });
+
+  const pg = await pool.connect();
+  try {
+    await pg.query('BEGIN');
+
+    // find client id by email (and whatever other guard you want)
+    const { rows } = await pg.query(
+      `SELECT id FROM clients WHERE email = $1 AND email_verified = true LIMIT 1`,
+      [client.email]
+    );
+    if (rows.length === 0) {
+      await pg.query('ROLLBACK');
+      return res.status(404).json({ error: 'Client not found' });
+    }
+    const clientId = rows[0].id;
+
+    // delete dependent rows first
+    await pg.query(`DELETE FROM appointments WHERE client_id = $1`, [clientId]);
+
+    // then delete the client
+    const del = await pg.query(`DELETE FROM clients WHERE id = $1`, [clientId]);
+    if (del.rowCount === 0) {
+      await pg.query('ROLLBACK');
+      return res.status(404).json({ error: 'Client not found' });
+    }
+
+    await pg.query('COMMIT');
+    return res.status(200).json({ message: 'Client deleted' });
+  } catch (err) {
+    await pg.query('ROLLBACK');
+    console.error('❌ Error deleting client:', err);
+    return res.status(500).json({ error: 'Server error' });
+  } finally {
+    pg.release();
+  }
+});
+
+
 module.exports = router;

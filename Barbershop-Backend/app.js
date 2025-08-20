@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const adminLoginRoutes = require('./routes/adminLogin');
-const getAvailabilityRoutes = require('./routes/getAvailability');
+const availabilityRoutes = require('./routes/availability');
 const submitFormRoutes = require('./routes/submitForm');
 const confirmationRoutes = require('./routes/confirmation');
 const clientsRoutes = require('./routes/clients');
@@ -17,7 +17,7 @@ app.use(express.json());
 
 // Register route module
 app.use('/api/admin', adminLoginRoutes);  // Base path for admin routes
-app.use('/api/admin', getAvailabilityRoutes);  // Base path for admin routes
+app.use('/api/admin', availabilityRoutes);  // Base path for admin routes
 app.use('/api/client', submitFormRoutes);  // Base path for client routes
 app.use('/api/confirmation', confirmationRoutes);  // Base path for confirmation routes
 app.use('/api/admin', clientsRoutes);  // Base path for clients routes

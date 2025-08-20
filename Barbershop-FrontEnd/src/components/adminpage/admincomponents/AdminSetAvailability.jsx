@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { DayPicker } from 'react-day-picker'
-
+import toast from 'react-hot-toast';
 
 export default function AdminSetAvailability({ }) {
     const [data, setData] = useState(null);
@@ -10,26 +10,28 @@ export default function AdminSetAvailability({ }) {
     const [errorMessage, setErrorMessage] = useState("");
     const AvailableTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-white/10 backdrop-blur-sm border border-white/20 text-[#DDCA7D] hover:bg-white/20 hover:shadow-md transition-all duration-300 focus:outline-none"
     const UnavailableVerifiedTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-red-500/20 backdrop-blur-sm border border-red-400/30 text-red-300 opacity-70 hover:bg-red-500/30 transition-all duration-300 focus:outline-none"
-    const UnavailableUnverifiedTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-yellow-400/10 backdrop-blur-sm border border-yellow-300 text-yellow-300 hover:bg-yellow-400/20 hover:shadow transition-all duration-30 focus:outline-none"
+    const UnavailableUnverifiedTimeslotsStyle ="px-4 py-2 rounded-xl text-sm font-medium montserrat-navbar-btn bg-amber-200/10 backdrop-blur-sm border border-amber-200/30 text-amber-200 hover:bg-amber-200/15 hover:border-amber-200/40 hover:shadow-sm transition-all duration-300 focus:outline-none";
     const UpdateTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn  bg-green-500/20 backdrop-blur-sm border border-green-400 text-green-300 hover:bg-green-500/30 hover:shadow-md transition-all duration-300 focus:outline-none "
     //const MockTimeslots = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
-    
 
 
-    
+
+
     useEffect(() => {
         const fetchData = async () => {
             const res = await fetch('http://localhost:3000/api/admin/getAvailability', {
-            method: 'GET',
-            credentials: 'include',
+                method: 'GET',
+                credentials: 'include',
             });
             const data = await res.json();
             if (data) {
                 setAvailability(data);
                 console.log(data);
-            }else{
-                //HANDLE ERROR
-                //this error is when the data is not fetched from the backend for the timeslots
+            } else {
+                setErrorMessage("Error fetching availability");
+                setTimeout(() => {
+                    setErrorMessage("");
+                }, 1000);
             }
         }
         fetchData();
@@ -47,55 +49,52 @@ export default function AdminSetAvailability({ }) {
         ? availability.find(item => item.date === selectedDateStr)
         : null;
 
-        const handleUpdateClick = async () => {
-            if (!selectedDateStr) return;
-          
-            const updatedDay = availability.find(item => item.date === selectedDateStr);
-          
-            if (!updatedDay) return;
-          
-            try {
-              const res = await fetch('http://localhost:3000/api/admin/updateAvailability', {
+    const handleUpdateClick = async () => {
+        if (!selectedDateStr) return;
+
+        const updatedDay = availability.find(item => item.date === selectedDateStr);
+
+        if (!updatedDay) return;
+
+        try {
+            const res = await fetch('http://localhost:3000/api/admin/updateAvailability', {
                 method: 'POST',
                 headers: {
-                  'Content-Type': 'application/json',
+                    'Content-Type': 'application/json',
                 },
                 credentials: 'include',
                 body: JSON.stringify(updatedDay),
-              });
-          
-              if (res.ok) {
+            });
+
+            if (res.ok) {
                 //reload page
-                setErrorMessage("Successfully updated availability");
-                setTimeout(() => {
-                    setErrorMessage("");
-                }, 1000);
-                
-              }else{
+                toast.success("Successfully updated availability");
+
+            } else {
                 //HANDLE ERROR
                 //this error is when the data is not updated in the backend for the timeslots
                 setErrorMessage("Error updating availability");
                 setTimeout(() => {
                     setErrorMessage("");
                 }, 1000);
-              }
+            }
 
-              const responseData = await res.json();
-              console.log("✅ Update successful:", responseData);
-          
-            } catch (err) {
-              console.error("❌ Update failed:", err);
-              setErrorMessage("Error updating availability");
-              setTimeout(() => {
+            const responseData = await res.json();
+            console.log("✅ Update successful:", responseData);
+
+        } catch (err) {
+            console.error("❌ Update failed:", err);
+            setErrorMessage("Error updating availability");
+            setTimeout(() => {
                 setErrorMessage("");
             }, 1000);
-            }
-          
-            setIsUpdateDisabled(true);
-            setTimeout(() => {
-              setIsUpdateDisabled(false);
-            }, 10000);
-          };
+        }
+
+        setIsUpdateDisabled(true);
+        setTimeout(() => {
+            setIsUpdateDisabled(false);
+        }, 10000);
+    };
 
     return (
         <div className="flex border-1 border-white/20 m-8 p-4 rounded-lg gap-4">
@@ -156,33 +155,45 @@ export default function AdminSetAvailability({ }) {
                                     className={
                                         timeslot.status === "available"
                                             ? AvailableTimeslotsStyle
-                                            : timeslot.status === "unavailable"
-                                                ? UnavailableVerifiedTimeslotsStyle
+                                            : timeslot.status === "booked"
+                                                ? `${UnavailableVerifiedTimeslotsStyle} cursor-not-allowed opacity-60`
                                                 : UnavailableUnverifiedTimeslotsStyle
                                     }
                                     style={{ minWidth: "6rem", minHeight: "2rem" }}
+                                    disabled={timeslot.status === "booked"}
                                     onClick={() => {
-                                        // Update the status of the clicked timeslot
+                                        // If booked, do nothing (blocked in UI)
+                                        if (timeslot.status === "booked") return;
+
+                                        // Toggle only between available/unavailable
                                         const updatedTimeslots = selectedDay.timeslots.map(slot =>
                                             slot.time === timeslot.time
-                                              ? {
-                                                  ...slot,
-                                                  status: slot.status === "available" ? "unavailable" : "available"
+                                                ? {
+                                                    ...slot,
+                                                    status: slot.status === "available" ? "unavailable" : "available"
                                                 }
-                                              : slot
-                                          );
-                                          
+                                                : slot
+                                        );
+
                                         setAvailability(prev =>
                                             prev.map(item =>
-                                              item.date === selectedDateStr
-                                                ? { ...item, timeslots: updatedTimeslots }
-                                                : item
+                                                item.date === selectedDateStr
+                                                    ? { ...item, timeslots: updatedTimeslots }
+                                                    : item
                                             )
-                                          );
+                                        );
                                     }}
+                                    title={
+                                        timeslot.status === "booked"
+                                            ? "Booked – cannot change"
+                                            : timeslot.status === "available"
+                                                ? "Click to close"
+                                                : "Click to open"
+                                    }
                                 >
                                     {timeslot.time}:00
                                 </button>
+
                             </div>
                         ))
                     ) : (
@@ -204,7 +215,7 @@ export default function AdminSetAvailability({ }) {
                             className={UnavailableVerifiedTimeslotsStyle}
                             style={{ minWidth: '6rem', minHeight: '2rem' }}
                         >
-                            Unavailable
+                            Booked
                         </button>
                     </div>
                     <div className='flex items-center p-2'>
@@ -212,17 +223,17 @@ export default function AdminSetAvailability({ }) {
                             className={UnavailableUnverifiedTimeslotsStyle}
                             style={{ minWidth: '6rem', minHeight: '2rem' }}
                         >
-                            Unverified
+                            Unavailable
                         </button>
                     </div>
-                    <div className='flex items-center p-2'>
+                    {errorMessage && <div className='flex items-center p-2'>
                         <button
                             className={UnavailableVerifiedTimeslotsStyle}
                             style={{ minWidth: '6rem', minHeight: '2rem' }}
                         >
                             {errorMessage}
                         </button>
-                    </div>
+                    </div>}
                 </div>
                 <div className='flex items-center justify-start p-2 self-start'>
                     <div className='flex items-center p-2'>
@@ -231,7 +242,7 @@ export default function AdminSetAvailability({ }) {
                             style={{ minWidth: '6rem', minHeight: '2rem' }}
                             onClick={() => {
                                 handleUpdateClick();
-                                
+
                             }}
                             disabled={isUpdateDisabled}
                         >
