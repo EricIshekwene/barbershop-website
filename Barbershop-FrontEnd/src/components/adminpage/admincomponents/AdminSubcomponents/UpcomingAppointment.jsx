@@ -6,7 +6,7 @@ import EditProfileModal from './EditProfileModal'
 import CancelAppointment from './CancelAppointment'
 import ApproveAppointment from './ApproveAppointment'
 
-export default function UpcomingAppointment({ name, email, time, date, service, instagram, bookingStatus, status, refreshAppointments }) {
+export default function UpcomingAppointment({ onCancelled, name, email, time, date, service, instagram, bookingStatus, status, refreshAppointments }) {
     const AvailableTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-white/10 backdrop-blur-sm border border-white/20 text-[#DDCA7D] hover:bg-white/20 hover:shadow-md transition-all duration-300 focus:outline-none"
     const UnavailableVerifiedTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-red-500/20 backdrop-blur-sm border border-red-400/30 text-red-300 opacity-70 hover:bg-red-500/30 transition-all duration-300 focus:outline-none"
     const UnavailableUnverifiedTimeslotsStyle = "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-yellow-400/10 backdrop-blur-sm border border-yellow-300 text-yellow-300 hover:bg-yellow-400/20 hover:shadow transition-all duration-30 focus:outline-none"
@@ -63,7 +63,7 @@ export default function UpcomingAppointment({ name, email, time, date, service, 
 
             </div>
             {mailModal && <MailModal name={name} email={email} closeModal={closeModal}  date={date} time={time} service={service} />}
-            {cancelAppointmentModal && <CancelAppointment name={name} email={email} date={date} time={time} closeModal={closeModal} service={service} />}
+            {cancelAppointmentModal && <CancelAppointment name={name} email={email} date={date} time={time} closeModal={closeModal} service={service} onCancelled={onCancelled} />}
             {approveAppointmentModal && <ApproveAppointment name={name} email={email} date={date} time={time} service={service} closeModal={closeModal} />}
         </div>
     )

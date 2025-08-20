@@ -4,7 +4,7 @@ import UpcomingAppointment from './AdminSubcomponents/UpcomingAppointment';
 import PastAppointments from './AdminSubcomponents/PastAppointments';
 import '../../../scrollbar.css';
 
-export default function AdminAppointments() {
+export default function AdminAppointments({ refreshAvailability }) {
   const [showUpcomingAppointments, setShowUpcomingAppointments] = useState(true);
   const [showPastAppointments, setShowPastAppointments] = useState(false);
 
@@ -134,6 +134,10 @@ export default function AdminAppointments() {
                 bookingStatus={item.bookingStatus}
                 status={item.status}
                 refreshAppointments={fetchAppointments}
+                onCancelled={() => {
+                  fetchAppointments();
+                  refreshAvailability?.();
+                }}
               />
             ))
           ) : (
@@ -196,6 +200,7 @@ export default function AdminAppointments() {
                 bookingStatus={item.bookingStatus}
                 status={item.status}
                 email={item.email}
+                
               />
             ))
           ) : (

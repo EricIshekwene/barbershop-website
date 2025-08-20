@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-export default function CancelAppointment({ name, date, time, closeModal, email, service }) {
+export default function CancelAppointment({ name, date, time, closeModal, email, service, onCancelled }) {
   const AvailableTimeslotsStyle =
     "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-white/10 backdrop-blur-sm border border-white/20 text-[#DDCA7D] hover:bg-white/20 hover:shadow-md transition-all duration-300 focus:outline-none";
   const UnavailableVerifiedTimeslotsStyle =
@@ -8,6 +8,7 @@ export default function CancelAppointment({ name, date, time, closeModal, email,
   const UnavailableUnverifiedTimeslotsStyle =
     "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-yellow-400/10 backdrop-blur-sm border border-yellow-300 text-yellow-300 hover:bg-yellow-400/20 hover:shadow transition-all duration-30 focus:outline-none";
     const [error, setError] = useState("");
+    const [submitting, setSubmitting] = useState(false);
     const normalizeDateTime = (isoDate, timeStr) => {
       const base = new Date(isoDate);
       const datePart = base.toLocaleDateString("en-US", {
@@ -29,6 +30,8 @@ export default function CancelAppointment({ name, date, time, closeModal, email,
     };
     const { datePart: prettyDate, timePart: prettyTime } = normalizeDateTime(date, time);
     const handleCancel = async () => {
+      if (submitting) return;            // NEW: prevent double click
+  setSubmitting(true); 
       try {
         const res = await fetch(`http://localhost:3000/api/admin/cancel-appointment`, {
           method: 'DELETE',
@@ -42,9 +45,12 @@ export default function CancelAppointment({ name, date, time, closeModal, email,
         toast.success("Appointment cancelled successfully");
         setError("");
         closeModal();
+        onCancelled();
       } catch (err) {
         console.error("❌ Error cancelling appointment:", err);
         setError(err.message);
+      } finally {
+        setSubmitting(false);
       }
     };
   return (
@@ -65,8 +71,8 @@ export default function CancelAppointment({ name, date, time, closeModal, email,
             <button onClick={closeModal} className={UnavailableUnverifiedTimeslotsStyle}>
               Back
             </button>
-            <button onClick={handleCancel} className={UnavailableVerifiedTimeslotsStyle}>
-              Cancel Appointment
+            <button onClick={handleCancel} disabled={submitting} className={UnavailableVerifiedTimeslotsStyle}>
+              {submitting ? "Cancelling..." : "Cancel Appointment"}
             </button>
           </div>
         </div>

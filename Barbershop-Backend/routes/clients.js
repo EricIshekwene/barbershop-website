@@ -228,7 +228,16 @@ router.delete('/cancel-appointment', async (req, res) => {
     if (result.rowCount === 0) {
       return res.status(404).json({ error: "No matching appointment found to cancel" });
     }
-
+    const result2 = await pool.query(
+      `UPDATE available_slots
+       SET is_available = TRUE
+       WHERE date = $1 AND time = $2::time`,
+      [date, time]
+    );
+    if (result2.rowCount === 0) {
+      console.error("⚠️ No matching slot found to update");
+      return res.status(404).json({ error: "No matching slot found to update" });
+    }
     // Format date and time nicely
     const prettyDate = new Date(date).toLocaleDateString("en-US", {
       weekday: "long",
