@@ -11,14 +11,13 @@ set up miguels emailign
 scroll bar
 
 user restrictions
--cant book twice a week
 -limit booking based on ip address
 
 
 
-disable modal buttons
 
-change timeslots to show green if booked an yellow if waiting for approval
+
+
 
 Emergency cuts
 -show all timeslots
