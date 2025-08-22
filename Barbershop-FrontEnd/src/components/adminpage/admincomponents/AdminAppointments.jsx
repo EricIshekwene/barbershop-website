@@ -4,7 +4,7 @@ import UpcomingAppointment from './AdminSubcomponents/UpcomingAppointment';
 import PastAppointments from './AdminSubcomponents/PastAppointments';
 import '../../../scrollbar.css';
 
-export default function AdminAppointments({ refreshAvailability }) {
+export default function AdminAppointments() {
   const [showUpcomingAppointments, setShowUpcomingAppointments] = useState(true);
   const [showPastAppointments, setShowPastAppointments] = useState(false);
 
@@ -119,7 +119,7 @@ export default function AdminAppointments({ refreshAvailability }) {
       {showUpcomingAppointments && (
         <div
           className="max-h-[450px] overflow-y-auto pr-2 space-y-4 custom-scrollbar"
-        // If you want a hard cap of exactly 3 cards: style={{ maxHeight: 'calc(3 * 150px)' }}
+       
         >
           {filteredUpcoming.length ? (
             filteredUpcoming.map((item, index) => (
@@ -133,11 +133,9 @@ export default function AdminAppointments({ refreshAvailability }) {
                 instagram={item.instagram}
                 bookingStatus={item.bookingStatus}
                 status={item.status}
-                refreshAppointments={fetchAppointments}
-                onCancelled={() => {
-                  fetchAppointments();
-                  refreshAvailability?.();
-                }}
+               
+                onCancelled={fetchAppointments}
+                
               />
             ))
           ) : (

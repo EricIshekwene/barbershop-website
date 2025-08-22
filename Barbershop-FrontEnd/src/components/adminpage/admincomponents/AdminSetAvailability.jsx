@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { DayPicker } from 'react-day-picker'
 import toast from 'react-hot-toast';
 
-export default function AdminSetAvailability({ }) {
+export default function AdminSetAvailability({  }) {
     const [data, setData] = useState(null);
     const [isUpdateDisabled, setIsUpdateDisabled] = useState(false);
     const [selectedDate, setSelectedDate] = useState(null);

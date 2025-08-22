@@ -77,10 +77,14 @@ export default function ConfirmationPage() {
           }
           navigate('/confirmed', { state: payload.booking || { name, email, date, time, service } });
         } else {
-          setError("Failed to add booking");
+          const err = await addBooking.json().catch(() => ({}));
+          setError(err.error || "Could not create booking.");
+          return;
         }
       } else {
-        setError("Account with this information does not exist");
+        const err = await verifyEmail.json().catch(() => ({}));
+        console.error("❌ Email verification error:", err);
+        setError(err.error || err.message || "Email verification failed");
       }
     } else {
       setError("Invalid confirmation code");

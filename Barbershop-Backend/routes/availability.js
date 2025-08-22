@@ -35,7 +35,7 @@ router.get('/getAvailability', async (req, res) => {
     }, []);
 
     res.json(grouped);
-    console.log( "available slots", grouped[1].timeslots);
+    //console.log( "available slots", grouped[1].timeslots);
   } catch (err) {
     console.error("❌ Error fetching availability:", err);
     res.status(500).json({ error: "Internal server error" });

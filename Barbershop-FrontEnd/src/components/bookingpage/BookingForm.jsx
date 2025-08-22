@@ -191,7 +191,7 @@ export default function BookingForm({ service, date, time }) {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ name, email, date, time: pgTime, service, status: "approved", reason: reason || null  }),
+                    body: JSON.stringify({ name, email, date, time: pgTime, service, reason: reason || null  }),
                 });
                 if (addBooking.ok) {
                     const payload = await addBooking.json();
@@ -199,8 +199,9 @@ export default function BookingForm({ service, date, time }) {
                       sessionStorage.setItem("booking", JSON.stringify(payload.booking));
                       navigate('/confirmed', { state: payload.booking });
                     } else {
-                      setFormError("Booking response invalid. Please try again.");
-                      console.error("❌ Booking insert failed:", payload);
+                        const err = await addBooking.json().catch(() => ({}));
+                        setFormError(err.error || "Could not create booking.");
+                        return;
                     }
                   } else {
                     const errData = await addBooking.json().catch(() => ({}));

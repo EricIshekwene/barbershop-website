@@ -11,7 +11,7 @@ export default function DeleteModal({ client, closeModal, onDeleteSuccess }) {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
+  
   const handleDelete = async () => {
     if (!client?.email) {
       setError("Missing client email.");

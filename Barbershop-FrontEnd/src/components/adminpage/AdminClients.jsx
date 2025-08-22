@@ -11,7 +11,7 @@ const fakeClients = [
   { name: "Carlos Rivera", phone: "(555) 222-3333", email: "carlos.rivera@email.com", instagram: "@carlosr", verified: true }
 ];
 
-export default function AdminClients() {
+export default function AdminClients({  }) {
   const [showClients, setShowClients] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
   const [error, setError] = useState('');
@@ -211,7 +211,10 @@ export default function AdminClients() {
         <DeleteModal
           client={selectedClient}
           closeModal={closeModal}
-          onDeleteSuccess={fetchClients}
+          onDeleteSuccess={() => {
+            fetchClients();
+           
+          }}
         />
       )}
     </div>

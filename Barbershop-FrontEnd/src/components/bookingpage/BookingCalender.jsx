@@ -112,11 +112,6 @@ function BookingCalendar({ setDate, setTime }) {
                     </span>
                   );
                 }
-                return (
-                  <span key={time} className={UnavailableUnverifiedTimeslotsStyle} title="Closed">
-                    {time}:00 • Closed
-                  </span>
-                );
               })
           ) : (
             <p className={UnavailableUnverifiedTimeslotsStyle}>No available times for this day</p>

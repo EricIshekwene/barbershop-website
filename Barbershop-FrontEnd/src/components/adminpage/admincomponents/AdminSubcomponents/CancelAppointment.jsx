@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-export default function CancelAppointment({ name, date, time, closeModal, email, service, onCancelled }) {
+export default function CancelAppointment({ name, date, time, closeModal, email, service,  onCancelled }) {
   const AvailableTimeslotsStyle =
     "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-white/10 backdrop-blur-sm border border-white/20 text-[#DDCA7D] hover:bg-white/20 hover:shadow-md transition-all duration-300 focus:outline-none";
   const UnavailableVerifiedTimeslotsStyle =
@@ -44,8 +44,9 @@ export default function CancelAppointment({ name, date, time, closeModal, email,
   
         toast.success("Appointment cancelled successfully");
         setError("");
-        closeModal();
-        onCancelled();
+
+          onCancelled();   
+          closeModal();
       } catch (err) {
         console.error("❌ Error cancelling appointment:", err);
         setError(err.message);
