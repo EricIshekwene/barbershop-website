@@ -1,32 +1,69 @@
-import Navbar from '../components/home page/Navbar'
-import HomeCard from '../components/home page/HomeCard'
-import BookYourAppointment from '../components/home page/BookYourAppointment'
-import reactLogo from '../assets/react.svg'
-import Subtext from '../components/home page/subtext'
-import HaircutExample from '../components/home page/HaircutExample'
-import Headings from '../components/home page/Headings'
-import ContactCard from '../components/home page/ContactCard'
-import { useState } from 'react'
 
-function Home() {
-  const [firstName, setFirstName] = useState('');
+import React from "react";
+import Navbar from "../components/homepage/Navbar";
+import HomeCard from "../components/homepage/HomeCard";
+import Headings from "../components/homepage/Headings";
+import HaircutExample from "../components/homepage/HaircutExample";
+import Subtext from "../components/homepage/subtext";
+import ContactCard from "../components/homepage/ContactCard";
+import BookYourAppointment from "../components/homepage/BookYourAppointment";
+
+export default function Home() {
   return (
-    <>
-      <Navbar text="TCUTTS" />
-      <div className="min-h-screen">
-        <div className="flex flex-col items-center justify-center gap-10">
-          
-          <HomeCard />
-          <BookYourAppointment />
-        </div>
-        <hr className="w-full border-t-2 border-gray-300 my-10"/>
-        <Headings text="The product" subtext="See the quality and precision of the cuts"/>
-        <HaircutExample />
-       
-        <p>{firstName}</p>
+    <div className="relative min-h-screen bg-black text-white overflow-hidden">
+      {/* Soft brand backdrop */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-40 -left-40 h-96 w-96 rounded-full bg-[#DDCA7D]/10 blur-3xl" />
+        <div className="absolute -bottom-40 -right-40 h-[28rem] w-[28rem] rounded-full bg-emerald-400/10 blur-3xl" />
+        <div className="absolute inset-0 bg-[radial-gradient(1200px_600px_at_50%_-10%,rgba(221,202,125,0.12),transparent_60%)]" />
       </div>
-    </>
-  )
-}
 
-export default Home
+      {/* Subtle grid */}
+      <div className="pointer-events-none absolute inset-0 opacity-[0.06]">
+        <div className="h-full w-full bg-[linear-gradient(transparent,transparent_31px,#fff_32px),linear-gradient(90deg,transparent,transparent_31px,#fff_32px)] bg-[length:32px_32px]" />
+      </div>
+
+      <div className="relative z-10">
+        <Navbar text="TCUTTS" />
+
+        {/* Hero */}
+        <section className="px-6">
+          <HomeCard />
+        </section>
+
+        {/* CTA */}
+        <section className="px-4 mt-10">
+          <BookYourAppointment />
+        </section>
+
+
+        {/* Gallery */}
+        <section className="px-4 mt-12">
+          <Headings text="Cuts that speak" subtext="A few recent favorites" />
+          <div className="mx-auto max-w-7xl">
+            <HaircutExample />
+          </div>
+        </section>
+
+        {/* Quote */}
+        <section className="px-4 mt-6">
+          <div className="mx-auto max-w-3xl">
+            <Subtext text="“Attention to detail is everything. Your cut should hit before you even say a word.”" />
+          </div>
+        </section>
+
+        {/* Contact */}
+        <section className="px-4 mt-8 pb-16">
+          <div className="mx-auto max-w-6xl">
+            <ContactCard />
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="border-t border-white/10 py-6 text-center text-white/60 text-sm">
+          © {new Date().getFullYear()} TCUTTS • All rights reserved
+        </footer>
+      </div>
+    </div>
+  );
+}

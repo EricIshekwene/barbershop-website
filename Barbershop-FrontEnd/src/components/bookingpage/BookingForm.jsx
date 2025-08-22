@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
-export default function BookingForm({ service, date, time }) {
+export default function BookingForm({ service, date, time, emergency }) {
     const navigate = useNavigate();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -14,7 +14,7 @@ export default function BookingForm({ service, date, time }) {
     const [instagramError, setInstagramError] = useState('');
     const [formError, setFormError] = useState('');
     const [reason, setReason] = useState('');
-    function validateForm({ name, email, phone, instagram, time, date, service }, setErrors) {
+    function validateForm({ name, email, phone, instagram, time, date, service, reason, emergency}, setErrors) {
         let hasError = false;
 
         const errors = {
@@ -75,18 +75,24 @@ export default function BookingForm({ service, date, time }) {
             errors.reason = 'Reason is required for emergency cuts';
             hasError = true;
         }
-
-        // Time, Date, Service
-        if (!time) {
-            errors.form = 'Time is required';
-            hasError = true;
-        } else if (!date) {
-            errors.form = 'Date is required';
-            hasError = true;
-        } else if (!service) {
-            errors.form = 'Service is required';
-            hasError = true;
-        }
+        if (service === 'Emergency Cut'){
+            const picks = emergency.proposals || [];
+            if (picks.length === 0) {
+                errors.form = 'Please select a time for your emergency cut';
+                hasError = true;
+            }else{ // Time, Date, Service
+                if (!time) {
+                    errors.form = 'Time is required';
+                    hasError = true;
+                } else if (!date) {
+                    errors.form = 'Date is required';
+                    hasError = true;
+                } else if (!service) {
+                    errors.form = 'Service is required';
+                    hasError = true;
+                }
+            }}
+        
 
         // Set individual error states
         setErrors(errors);
@@ -102,7 +108,7 @@ export default function BookingForm({ service, date, time }) {
         e.preventDefault();
         console.log("handleSubmit hit");
         const isValid = validateForm(
-            { name, email, phone, instagram, time, date, service, reason },
+            { name, email, phone, instagram, time, date, service, reason, emergency },
             (errors) => {
                 setNameError(errors.name);
                 setEmailError(errors.email);
@@ -156,21 +162,37 @@ export default function BookingForm({ service, date, time }) {
                   if (emailRes.ok) {
                     const data = await emailRes.json();
                     const confirmationCode = data.code; 
-                  
+                  //differentiate between emergency and regular booking
                     console.log("✅ Email sent. Confirmation code:", confirmationCode);
                   
-                    navigate('/confirmation', {
-                      state: {
-                        name,
-                        email,
-                        phone,
-                        instagram,
-                        date,
-                        time,
-                        service,
-                        confirmationCode,
-                      },
+                    if (service === 'Emergency Cut'){
+                        navigate('/confirmation', {
+                        state: {
+                            name,
+                            email,
+                            phone,
+                            instagram,
+                            date,
+                            time,
+                            service,
+                            confirmationCode,
+                            emergency:{proposals: emergency?.proposals || [], reason},
+                        },
                     });
+                    }else{
+                        navigate('/confirmation', {
+                            state: {
+                                name,
+                                email,
+                                phone,
+                                instagram,
+                                date,
+                                time,
+                                service,
+                                confirmationCode,
+                            },
+                        });
+                    }
                   } else {
                     const error = await emailRes.json(); // <- was res.json(), corrected to emailRes.json()
                     console.error("❌ Email error:", error.error || error.message || "Failed to send email");
@@ -181,41 +203,67 @@ export default function BookingForm({ service, date, time }) {
 
 
             } else if (res.status === 200) {
-                console.log("✅ Client already exists and is verified");
-                const bookingState = { name, email, phone, instagram, date, time, service, reason };
-                
-                
-                const pgTime = toPgTime(time);
-                const addBooking = await fetch('http://localhost:3000/api/confirmation/add-booking', {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ name, email, date, time: pgTime, service, reason: reason || null  }),
-                });
-                if (addBooking.ok) {
-                    const payload = await addBooking.json();
-                    if (payload.booking && payload.booking.id) {
-                      sessionStorage.setItem("booking", JSON.stringify(payload.booking));
-                      navigate('/confirmed', { state: payload.booking });
-                    } else {
-                        const err = await addBooking.json().catch(() => ({}));
-                        setFormError(err.error || "Could not create booking.");
+                if (service === 'Emergency Cut'){
+                    const proposals = emergency?.proposals || [];
+                    const reqres = await fetch('http://localhost:3000/api/emergency/request', {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ email, service, proposals, reason: reason || null  }),
+                    });
+                    if (!reqres.ok){
+                        const error = await reqres.json();
+                        setFormError(error.error || error.message || "Failed to send emergency request");
+                        console.error("❌ Error:", error.message);
                         return;
                     }
-                  } else {
-                    const errData = await addBooking.json().catch(() => ({}));
-                    setFormError(errData.error || "Failed to add booking");
-                    console.error("❌ Error adding booking:", errData);
-                  }
+                    navigate('/emergency-confirmation', {
+                        state: {
+                            name,
+                            email,
+                            service,
+                            proposals,
+                            confirmationCode,
+                            message: "Emergency request sent successfully",
+                        },
+                    });
+                }else{
+                    const pgTime = toPgTime(time);
+                    const addBooking = await fetch('http://localhost:3000/api/confirmation/add-booking', {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: 
+                        JSON.stringify({ name, email, date, time: pgTime, service, reason: reason || null  }),
+                    });
+                    if (addBooking.ok){
+                        const payload = await addBooking.json();
+                        if (payload.booking && payload.booking.id){
+                            sessionStorage.setItem("booking", JSON.stringify(payload.booking));
+                            navigate('/confirmed', { state: payload.booking });
+                        }
+                        else{
+                            const err = await addBooking.json().catch(() => ({}));
+                            setFormError(err.error || "Could not create booking. Error 6");
+                            return;
+                        }
+                    }else{
+                        const err = await addBooking.json().catch(() => ({}));
+                        setFormError(err.error || "Failed to add booking. Error 7");
+                        console.error("❌ Error 7: adding booking:", err.message);
+                        return;
+                    }
+                }
             } else {
                 const error = await error.json();
-                setFormError(error.error || error.message || "An error occurred. Please try again.");
-                console.error("❌ Error:", error.message);
+                setFormError(error.error || error.message || "An error occurred. Please try again. Error 8");
+                console.error("❌ Error 8:", error.message);
             }
             
         } catch (err) {
-            console.error("❌ Network error:", err);
+            console.error("❌ Network error. Error 9:", err);
         }
     }
 
