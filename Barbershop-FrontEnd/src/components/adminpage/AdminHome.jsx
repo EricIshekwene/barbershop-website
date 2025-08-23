@@ -4,7 +4,7 @@ import AdminSetAvailability from './admincomponents/AdminSetAvailability';
 import AdminAppointments from './admincomponents/AdminAppointments';
 import AdminClients from './AdminClients';
 import Stats from './admincomponents/stats';
-
+import EmergencyAppointments from './admincomponents/EmergencyAppointments';
 export default function AdminHome() {
 
 
@@ -18,8 +18,11 @@ export default function AdminHome() {
       <Stats />
       <AdminAppointments
       />
+      <EmergencyAppointments
+      />
       <AdminClients
       />
+      
     </div>
   );
 }

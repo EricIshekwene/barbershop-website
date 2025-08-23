@@ -11,7 +11,7 @@ export default function Stats() {
         "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-white/10 backdrop-blur-sm border border-white/20 text-[#DDCA7D]";
 
     return (
-        <div className="flex hidden flex-col bg-black m-8 mt-4 p-4 rounded-lg gap-4 border border-white/20">
+        <div className="flex  flex-col bg-black m-8 mt-4 p-4 rounded-lg gap-4 border border-white/20">
             {/* Top bar with chevron */}
             <div className="flex items-center gap-3 cursor-pointer" onClick={() => setOpen(v => !v)}>
                 <p className="text-2xl raleway-bold text-white">Stats</p>

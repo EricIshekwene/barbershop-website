@@ -20,8 +20,7 @@ user restrictions
 
 
 Emergency cuts
--show all timeslots
--add reason to format
---confirmation
----wait for a phone call or email from miguel for approval
--emergency cut styling
+- cancel
+-delete user routing
+-approval
+
