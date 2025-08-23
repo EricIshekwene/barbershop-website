@@ -75,23 +75,25 @@ export default function BookingForm({ service, date, time, emergency }) {
             errors.reason = 'Reason is required for emergency cuts';
             hasError = true;
         }
-        if (service === 'Emergency Cut'){
-            const picks = emergency.proposals || [];
+        if (service === 'Emergency Cut') {
+            const picks = emergency?.proposals || [];
             if (picks.length === 0) {
-                errors.form = 'Please select a time for your emergency cut';
+                errors.form = 'Please select at least one time for your emergency cut';
                 hasError = true;
-            }else{ // Time, Date, Service
-                if (!time) {
-                    errors.form = 'Time is required';
-                    hasError = true;
-                } else if (!date) {
-                    errors.form = 'Date is required';
-                    hasError = true;
-                } else if (!service) {
-                    errors.form = 'Service is required';
-                    hasError = true;
-                }
-            }}
+            }
+        } else {
+            // Normal booking path → require single date/time/service
+            if (!time) {
+                errors.form = 'Time is required';
+                hasError = true;
+            } else if (!date) {
+                errors.form = 'Date is required';
+                hasError = true;
+            } else if (!service) {
+                errors.form = 'Service is required';
+                hasError = true;
+            }
+        }
         
 
         // Set individual error states
@@ -106,6 +108,7 @@ export default function BookingForm({ service, date, time, emergency }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        let confirmationCode; 
         console.log("handleSubmit hit");
         const isValid = validateForm(
             { name, email, phone, instagram, time, date, service, reason, emergency },
@@ -218,13 +221,25 @@ export default function BookingForm({ service, date, time, emergency }) {
                         console.error("❌ Error:", error.message);
                         return;
                     }
+                    const emailRes = await fetch('http://localhost:3000/api/emergency/mail-request', {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ name, email, reason, proposals }),
+                    });
+                    if (!emailRes.ok){
+                        const error = await emailRes.json();
+                        setFormError(error.error || error.message || "Failed to send emergency request email");
+                        console.error("❌ Error:", error.message);
+                        return;
+                    }
                     navigate('/emergency-confirmation', {
                         state: {
                             name,
                             email,
                             service,
                             proposals,
-                            confirmationCode,
                             message: "Emergency request sent successfully",
                         },
                     });

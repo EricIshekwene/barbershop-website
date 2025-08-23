@@ -51,35 +51,33 @@ export default function EmergencyTimePicker({ onChange }) {
       setTodayTimes(prev => {
         const exists = prev.includes(val);
         let next = exists ? prev.filter(x => x !== val) : [...prev, val];
-        // enforce total cap 3
         if (!exists && next.length + tomorrowTimes.length > 3) return prev;
-        next = Array.from(new Set(next)).sort();
-        emit(next, tomorrowTimes);
-        return next;
+        return Array.from(new Set(next)).sort();
       });
     } else {
       setTomorrowTimes(prev => {
         const exists = prev.includes(val);
         let next = exists ? prev.filter(x => x !== val) : [...prev, val];
         if (!exists && todayTimes.length + next.length > 3) return prev;
-        next = Array.from(new Set(next)).sort();
-        emit(todayTimes, next);
-        return next;
+        return Array.from(new Set(next)).sort();
       });
     }
   };
+  useEffect(() => {
+    const proposals = [
+      ...todayTimes.map(t => ({ date: todayISO, time: t })),
+      ...tomorrowTimes.map(t => ({ date: tomorrowISO, time: t })),
+    ];
+    onChange?.({ proposals });
+  }, [todayTimes, tomorrowTimes, todayISO, tomorrowISO, onChange]);
 
-  const removePick = (dateISO, time) => {
-    if (dateISO === todayISO) {
-      const next = todayTimes.filter(t => t !== time);
-      setTodayTimes(next);
-      emit(next, tomorrowTimes);
-    } else {
-      const next = tomorrowTimes.filter(t => t !== time);
-      setTomorrowTimes(next);
-      emit(todayTimes, next);
-    }
-  };
+ const removePick = (dateISO, time) => {
+  if (dateISO === todayISO) {
+    setTodayTimes(prev => prev.filter(t => t !== time));
+  } else {
+    setTomorrowTimes(prev => prev.filter(t => t !== time));
+  }
+};
 
   const activeISO = activeDay === 'today' ? todayISO : tomorrowISO;
   const activeList = activeDay === 'today' ? todayTimes : tomorrowTimes;

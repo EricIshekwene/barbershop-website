@@ -4,7 +4,7 @@ import { FaCalendarAlt, FaClock, FaRegEnvelope, FaHome } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 
 export default function EmergencySubmitted() {
-    //const { name, email, service, proposals, confirmationCode, message } = useLocation().state;
+    const { name, email, service, proposals, message } = useLocation().state;
   return (
     <div className="relative min-h-screen overflow-hidden bg-black text-white">
       {/* Soft gradient backdrop */}
@@ -50,16 +50,16 @@ export default function EmergencySubmitted() {
             <div className="flex flex-wrap gap-2">
               <span className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-3 py-1.5 text-sm text-[#DDCA7D]">
                 <FaCalendarAlt className="opacity-90" />
-                Tue, Sep 2 — 11:00
+                {proposals[0] && proposals[0].date + ' — ' + proposals[0].time}
               </span>
-              <span className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-3 py-1.5 text-sm text-[#DDCA7D]">
+              {proposals[1] && <span className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-3 py-1.5 text-sm text-[#DDCA7D]">
                 <FaCalendarAlt className="opacity-90" />
-                Tue, Sep 2 — 13:30
-              </span>
-              <span className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-3 py-1.5 text-sm text-[#DDCA7D]">
+                {proposals[1] && proposals[1].date + ' — ' + proposals[1].time}
+              </span>}
+              {proposals[2] && <span className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-3 py-1.5 text-sm text-[#DDCA7D]">
                 <FaCalendarAlt className="opacity-90" />
-                Wed, Sep 3 — 09:00
-              </span>
+                {proposals[2] && proposals[2].date + ' — ' + proposals[2].time}
+              </span>}
             </div>
           </div>
 
