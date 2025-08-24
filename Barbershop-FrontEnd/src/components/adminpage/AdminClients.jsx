@@ -5,13 +5,8 @@ import { MdModeEditOutline, MdDelete, MdEmail } from "react-icons/md";
 import ClientMailModal from './admincomponents/AdminSubcomponents/ClientMailModal';
 import EditProfileModal from './admincomponents/AdminSubcomponents/EditProfileModal';
 import DeleteModal from './admincomponents/AdminSubcomponents/DeleteModal';
-const fakeClients = [
-  { name: "John Doe", phone: "(555) 123-4567", email: "john.doe@email.com", instagram: "@johndoe", verified: true },
-  { name: "Jane Smith", phone: "(555) 987-6543", email: "jane.smith@email.com", instagram: "@janesmith", verified: false },
-  { name: "Carlos Rivera", phone: "(555) 222-3333", email: "carlos.rivera@email.com", instagram: "@carlosr", verified: true }
-];
 
-export default function AdminClients({  }) {
+export default function AdminClients({}) {
   const [showClients, setShowClients] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
   const [error, setError] = useState('');
@@ -19,15 +14,17 @@ export default function AdminClients({  }) {
 
   const [mailModal, setMailModal] = useState(false);
   const [editProfileModal, setEditProfileModal] = useState(false);
-  const [query, setQuery] = useState(""); // 🔎 search-by-name
+  const [query, setQuery] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
+
   const AvailableTimeslotsStyle =
     "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-white/10 backdrop-blur-sm border border-white/20 text-[#DDCA7D] hover:bg-white/20 hover:shadow-md transition-all duration-300 focus:outline-none";
   const UnavailableVerifiedTimeslotsStyle =
     "px-4 py-2 rounded-xl text-sm font-semibold montserrat-navbar-btn bg-red-500/20 backdrop-blur-sm border border-red-400/30 text-red-300 opacity-70 hover:bg-red-500/30 transition-all duration-300 focus:outline-none";
 
-  const handleToggleClients = () => setShowClients((v) => !v);
-  const closeModal = () => { setMailModal(false); setEditProfileModal(false); setDeleteModal(false);};
+  const handleToggleClients = () => setShowClients(v => !v);
+  const closeModal = () => { setMailModal(false); setEditProfileModal(false); setDeleteModal(false); };
+
   const toEditPayload = (c) => ({
     name: c?.name ?? "",
     phone: (c?.phone ?? "").replace(/\D/g, ""),
@@ -35,6 +32,7 @@ export default function AdminClients({  }) {
     instagram: (c?.instagram ?? "").replace(/^@/, ""),
     status: !!c?.verified,
   });
+
   const fetchClients = useCallback(async () => {
     try {
       const res = await fetch('http://localhost:3000/api/admin/verified-clients', {
@@ -63,6 +61,7 @@ export default function AdminClients({  }) {
     } catch (err) {
       console.error('❌ Error fetching clients:', err);
       setError(err.message || 'Failed to fetch clients');
+      setClients([]); // ensure no fallback
     }
   }, []);
 
@@ -70,15 +69,14 @@ export default function AdminClients({  }) {
     fetchClients();
   }, [fetchClients]);
 
-  // 🔁 Data source + filtering (NAME ONLY)
-  const clientSource = clients.length ? clients : fakeClients;
+  // filtering (NAME ONLY) — strictly from API data (no fallback)
   const norm = (v) => (v ?? '').toString().toLowerCase();
   const filteredClients = useMemo(
-    () => clientSource.filter(c => norm(c.name).includes(norm(query))),
-    [clientSource, query]
+    () => clients.filter(c => norm(c.name).includes(norm(query))),
+    [clients, query]
   );
 
-  const total = clientSource.length;
+  const total = clients.length;
   const shown = filteredClients.length;
 
   return (
@@ -134,10 +132,12 @@ export default function AdminClients({  }) {
           />
         </div>
 
-        {/* Rows container with scroll */}
+        {/* Rows container */}
         {showClients && (
           <div className="max-h-50 overflow-y-auto space-y-2 pr-1">
-            {shown ? (
+            {total === 0 ? (
+              <p className="text-white/60 italic px-1">No clients yet.</p>
+            ) : shown ? (
               filteredClients.map((client, idx) => (
                 <div
                   key={idx}
@@ -164,10 +164,6 @@ export default function AdminClients({  }) {
                   </div>
 
                   <div className="flex gap-2 justify-center">
-                    <input
-                      type="checkbox"
-                      className="w-5 h-5 accent-[#DDCA7D] bg-white/10 border border-white/20 rounded focus:ring-2 focus:ring-[#DDCA7D]/50 transition-all duration-200"
-                    />
                     <MdModeEditOutline
                       className="text-white text-2xl cursor-pointer"
                       onClick={() => {
@@ -175,7 +171,8 @@ export default function AdminClients({  }) {
                         setEditProfileModal(true);
                       }}
                     />
-                    <MdDelete className="text-red-500 text-2xl cursor-pointer"
+                    <MdDelete
+                      className="text-red-500 text-2xl cursor-pointer"
                       onClick={() => {
                         setSelectedClient(toEditPayload(client));
                         setDeleteModal(true);
@@ -197,9 +194,7 @@ export default function AdminClients({  }) {
         )}
       </div>
 
-      {mailModal && (
-        <ClientMailModal closeModal={closeModal} />
-      )}
+      {mailModal && <ClientMailModal closeModal={closeModal} />}
       {editProfileModal && (
         <EditProfileModal
           client={selectedClient}
@@ -213,7 +208,6 @@ export default function AdminClients({  }) {
           closeModal={closeModal}
           onDeleteSuccess={() => {
             fetchClients();
-           
           }}
         />
       )}

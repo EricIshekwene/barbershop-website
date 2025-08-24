@@ -167,7 +167,6 @@ function BaseModal({ isOpen, title, onClose, children, footer }) {
    Cancel Emergency Modal
    ============================================================ */
 export function CancelEmergencyModal({ isOpen, onClose, request, onCancel }) {
-    const requestId = request?.request_id;
     return (
         <BaseModal
             isOpen={isOpen}
@@ -177,7 +176,7 @@ export function CancelEmergencyModal({ isOpen, onClose, request, onCancel }) {
                 <>
                     <button className={GhostBtn} onClick={onClose}>Keep</button>
                     <button className={DangerBtn} onClick={onCancel}>
-                        <RxCross1 className="inline-block mr-2 text-lg" />
+                        <RxCross1 className="inline-block mr-2 text-lg"/>
                         Cancel Request
                     </button>
                 </>

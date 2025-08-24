@@ -290,10 +290,10 @@ router.delete('/delete-client', async (req, res) => {
   try {
     await pg.query('BEGIN');
 
-    // find client id by email (and whatever other guard you want)
+    // 1) Resolve client id
     const { rows } = await pg.query(
       `SELECT id FROM clients WHERE email = $1 AND email_verified = true LIMIT 1`,
-      [client.email]
+      [client.email.trim().toLowerCase()]
     );
     if (rows.length === 0) {
       await pg.query('ROLLBACK');
@@ -301,18 +301,46 @@ router.delete('/delete-client', async (req, res) => {
     }
     const clientId = rows[0].id;
 
-    // delete dependent rows first
-    await pg.query(`DELETE FROM appointments WHERE client_id = $1`, [clientId]);
+    // 2) Delete appointments (regular + emergency-created alike)
+    const apptDel = await pg.query(
+      `DELETE FROM appointments WHERE client_id = $1 RETURNING id`,
+      [clientId]
+    );
 
-    // then delete the client
-    const del = await pg.query(`DELETE FROM clients WHERE id = $1`, [clientId]);
-    if (del.rowCount === 0) {
+    // 3) Delete emergency request slots for this client's requests
+    const slotsDel = await pg.query(
+      `DELETE FROM emergency_request_slots
+         WHERE request_id IN (SELECT id FROM emergency_requests WHERE client_id = $1)
+       RETURNING id`,
+      [clientId]
+    );
+
+    // 4) Delete emergency requests for this client
+    const reqsDel = await pg.query(
+      `DELETE FROM emergency_requests WHERE client_id = $1 RETURNING id`,
+      [clientId]
+    );
+
+    // 5) Finally delete the client
+    const clientDel = await pg.query(
+      `DELETE FROM clients WHERE id = $1 RETURNING id`,
+      [clientId]
+    );
+    if (clientDel.rowCount === 0) {
       await pg.query('ROLLBACK');
       return res.status(404).json({ error: 'Client not found' });
     }
 
     await pg.query('COMMIT');
-    return res.status(200).json({ message: 'Client deleted' });
+    return res.status(200).json({
+      message: 'Client and related data deleted',
+      counts: {
+        appointmentsDeleted: apptDel.rowCount,
+        emergencySlotsDeleted: slotsDel.rowCount,
+        emergencyRequestsDeleted: reqsDel.rowCount,
+        clientsDeleted: clientDel.rowCount,
+      }
+    });
   } catch (err) {
     await pg.query('ROLLBACK');
     console.error('❌ Error deleting client:', err);

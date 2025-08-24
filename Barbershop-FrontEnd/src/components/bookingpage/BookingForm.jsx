@@ -14,6 +14,7 @@ export default function BookingForm({ service, date, time, emergency }) {
     const [instagramError, setInstagramError] = useState('');
     const [formError, setFormError] = useState('');
     const [reason, setReason] = useState('');
+    const [reasonError, setReasonError] = useState('');
     function validateForm({ name, email, phone, instagram, time, date, service, reason, emergency}, setErrors) {
         let hasError = false;
 
@@ -23,7 +24,8 @@ export default function BookingForm({ service, date, time, emergency }) {
             phone: '',
             instagram: '',
             form: '',
-            reason: ''
+            reason: '',
+            emergency: ''
         };
 
         // Name
@@ -74,6 +76,9 @@ export default function BookingForm({ service, date, time, emergency }) {
         if (service === 'Emergency Cut' && !reason.trim()) {
             errors.reason = 'Reason is required for emergency cuts';
             hasError = true;
+        }else if (service === 'Emergency Cut' && reason.length > 100) {
+            errors.reason = 'Reason must be less than 100 characters long';
+            hasError = true;
         }
         if (service === 'Emergency Cut') {
             const picks = emergency?.proposals || [];
@@ -118,6 +123,7 @@ export default function BookingForm({ service, date, time, emergency }) {
                 setPhoneError(errors.phone);
                 setInstagramError(errors.instagram);
                 setFormError(errors.form);
+                setReasonError(errors.reason);
             }
         );
 
