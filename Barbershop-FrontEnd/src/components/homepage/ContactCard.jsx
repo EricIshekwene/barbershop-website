@@ -15,14 +15,15 @@ function ContactCard() {
           </div>
           <div className="flex gap-3">
             <a
-              href="https://instagram.com/your-handle"
+              href="https://instagram.com/tcutss"
               className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-4 py-2 text-sm text-white hover:bg-white/20"
             >
               <FaInstagram className="text-[#DDCA7D]" />
               Instagram
             </a>
             <a
-              href="https://tiktok.com/@your-handle"
+              href="https://www.tiktok.com/@tcutss_?_t=ZP-8z9D32jVKnP&_r=1"
+              target="_blank"
               className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-4 py-2 text-sm text-white hover:bg-white/20"
             >
               <FaTiktok className="text-[#DDCA7D]" />

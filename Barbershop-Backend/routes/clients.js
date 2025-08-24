@@ -349,6 +349,27 @@ router.delete('/delete-client', async (req, res) => {
     pg.release();
   }
 });
+router.post('/resend-email', async (req, res) => {
+  const { name, email, confirmationCode } = req.body;
+  if (!email) return res.status(400).json({ error: "Email required" });
+
+  try {
+    await transporter.sendMail({
+      from: `"Barbershop" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Your Confirmation Code",
+      html: `<p>Hi ${name || "there"},</p>
+             <p>Here is your confirmation code: ${confirmationCode}.</p>
+             <p>- Barbershop Team</p>`
+    });
+
+    res.status(200).json({ message: "Confirmation email resent" });
+  } catch (err) {
+    console.error("❌ Error resending email:", err);
+    res.status(500).json({ error: "Failed to resend email" });
+    console.log(err);
+  }
+});
 
 
 module.exports = router;

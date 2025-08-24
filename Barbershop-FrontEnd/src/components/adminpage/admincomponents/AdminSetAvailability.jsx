@@ -71,8 +71,7 @@ export default function AdminSetAvailability({  }) {
                 toast.success("Successfully updated availability");
 
             } else {
-                //HANDLE ERROR
-                //this error is when the data is not updated in the backend for the timeslots
+                
                 setErrorMessage("Error updating availability");
                 setTimeout(() => {
                     setErrorMessage("");

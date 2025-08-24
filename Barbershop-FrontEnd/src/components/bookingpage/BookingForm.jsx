@@ -15,7 +15,7 @@ export default function BookingForm({ service, date, time, emergency }) {
     const [formError, setFormError] = useState('');
     const [reason, setReason] = useState('');
     const [reasonError, setReasonError] = useState('');
-    function validateForm({ name, email, phone, instagram, time, date, service, reason, emergency}, setErrors) {
+    function validateForm({ name, email, phone, instagram, time, date, service, reason, emergency }, setErrors) {
         let hasError = false;
 
         const errors = {
@@ -76,7 +76,7 @@ export default function BookingForm({ service, date, time, emergency }) {
         if (service === 'Emergency Cut' && !reason.trim()) {
             errors.reason = 'Reason is required for emergency cuts';
             hasError = true;
-        }else if (service === 'Emergency Cut' && reason.length > 100) {
+        } else if (service === 'Emergency Cut' && reason.length > 100) {
             errors.reason = 'Reason must be less than 100 characters long';
             hasError = true;
         }
@@ -99,7 +99,7 @@ export default function BookingForm({ service, date, time, emergency }) {
                 hasError = true;
             }
         }
-        
+
 
         // Set individual error states
         setErrors(errors);
@@ -109,11 +109,11 @@ export default function BookingForm({ service, date, time, emergency }) {
     const toPgTime = (t) => {
         // Make sure it's a 2-digit hour with :00:00
         return String(t).padStart(2, '0') + ':00:00';
-      };
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        let confirmationCode; 
+        let confirmationCode;
         console.log("handleSubmit hit");
         const isValid = validateForm(
             { name, email, phone, instagram, time, date, service, reason, emergency },
@@ -163,32 +163,32 @@ export default function BookingForm({ service, date, time, emergency }) {
                 const emailRes = await fetch('http://localhost:3000/api/confirmation/mail-confirmation', {
                     method: 'POST',
                     headers: {
-                      "Content-Type": "application/json",
+                        "Content-Type": "application/json",
                     },
                     body: JSON.stringify({ name, email }),
-                  });
-                  
-                  if (emailRes.ok) {
+                });
+
+                if (emailRes.ok) {
                     const data = await emailRes.json();
-                    const confirmationCode = data.code; 
-                  //differentiate between emergency and regular booking
+                    const confirmationCode = data.code;
+                    //differentiate between emergency and regular booking
                     console.log("✅ Email sent. Confirmation code:", confirmationCode);
-                  
-                    if (service === 'Emergency Cut'){
+
+                    if (service === 'Emergency Cut') {
                         navigate('/confirmation', {
-                        state: {
-                            name,
-                            email,
-                            phone,
-                            instagram,
-                            date,
-                            time,
-                            service,
-                            confirmationCode,
-                            emergency:{proposals: emergency?.proposals || [], reason},
-                        },
-                    });
-                    }else{
+                            state: {
+                                name,
+                                email,
+                                phone,
+                                instagram,
+                                date,
+                                time,
+                                service,
+                                confirmationCode,
+                                emergency: { proposals: emergency?.proposals || [], reason },
+                            },
+                        });
+                    } else {
                         navigate('/confirmation', {
                             state: {
                                 name,
@@ -202,26 +202,26 @@ export default function BookingForm({ service, date, time, emergency }) {
                             },
                         });
                     }
-                  } else {
+                } else {
                     const error = await emailRes.json(); // <- was res.json(), corrected to emailRes.json()
                     console.error("❌ Email error:", error.error || error.message || "Failed to send email");
                     setFormError("Network error — please try again.");
-                  }
-                  
+                }
+
 
 
 
             } else if (res.status === 200) {
-                if (service === 'Emergency Cut'){
+                if (service === 'Emergency Cut') {
                     const proposals = emergency?.proposals || [];
                     const reqres = await fetch('http://localhost:3000/api/emergency/request', {
                         method: 'POST',
                         headers: {
                             "Content-Type": "application/json",
                         },
-                        body: JSON.stringify({ email, service, proposals, reason: reason || null  }),
+                        body: JSON.stringify({ email, service, proposals, reason: reason || null }),
                     });
-                    if (!reqres.ok){
+                    if (!reqres.ok) {
                         const error = await reqres.json();
                         setFormError(error.error || error.message || "Failed to send emergency request");
                         console.error("❌ Error:", error.message);
@@ -234,7 +234,7 @@ export default function BookingForm({ service, date, time, emergency }) {
                         },
                         body: JSON.stringify({ name, email, reason, proposals }),
                     });
-                    if (!emailRes.ok){
+                    if (!emailRes.ok) {
                         const error = await emailRes.json();
                         setFormError(error.error || error.message || "Failed to send emergency request email");
                         console.error("❌ Error:", error.message);
@@ -249,28 +249,28 @@ export default function BookingForm({ service, date, time, emergency }) {
                             message: "Emergency request sent successfully",
                         },
                     });
-                }else{
+                } else {
                     const pgTime = toPgTime(time);
                     const addBooking = await fetch('http://localhost:3000/api/confirmation/add-booking', {
                         method: 'POST',
                         headers: {
                             "Content-Type": "application/json",
                         },
-                        body: 
-                        JSON.stringify({ name, email, date, time: pgTime, service, reason: reason || null  }),
+                        body:
+                            JSON.stringify({ name, email, date, time: pgTime, service, reason: reason || null }),
                     });
-                    if (addBooking.ok){
+                    if (addBooking.ok) {
                         const payload = await addBooking.json();
-                        if (payload.booking && payload.booking.id){
+                        if (payload.booking && payload.booking.id) {
                             sessionStorage.setItem("booking", JSON.stringify(payload.booking));
                             navigate('/confirmed', { state: payload.booking });
                         }
-                        else{
+                        else {
                             const err = await addBooking.json().catch(() => ({}));
                             setFormError(err.error || "Could not create booking. Error 6");
                             return;
                         }
-                    }else{
+                    } else {
                         const err = await addBooking.json().catch(() => ({}));
                         setFormError(err.error || "Failed to add booking. Error 7");
                         console.error("❌ Error 7: adding booking:", err.message);
@@ -282,7 +282,7 @@ export default function BookingForm({ service, date, time, emergency }) {
                 setFormError(error.error || error.message || "An error occurred. Please try again. Error 8");
                 console.error("❌ Error 8:", error.message);
             }
-            
+
         } catch (err) {
             console.error("❌ Network error. Error 9:", err);
         }
@@ -336,14 +336,22 @@ export default function BookingForm({ service, date, time, emergency }) {
                         {date} @ {time}:00 || {service}
                     </p>
                 )}
-                {service === 'Emergency Cut' && <input
-                    type="text"
-                    placeholder="Reason for emergency cut"
-                    value={reason}
-                    onChange={e => setReason(e.target.value)}
-                    className="raleway-regular w-full p-2 rounded-md  border-white/20 text-[#DDCA7D]  backdrop-blur-sm focus:outline-none focus:ring-0"
-                />}
-
+                {service === 'Emergency Cut' && (
+                <>
+                    <input
+                        type="text"
+                        placeholder="Reason for emergency cut"
+                        value={reason}
+                        onChange={e => setReason(e.target.value)}
+                        className="raleway-regular w-full p-2 rounded-md border-white/20 text-[#DDCA7D] backdrop-blur-sm focus:outline-none focus:ring-0"
+                    />
+                    {reasonError && (
+                        <p className="text-red-500 raleway-regular text-left text-sm font-bold">
+                            {reasonError}
+                        </p>
+                    )}
+                </>
+)}
                 <button type="submit" className="w-full p-2 m-2  raleway-regular rounded-md  border-white/20 text-[#DDCA7D]  backdrop-blur-sm">Submit</button>
             </form>
         </div>

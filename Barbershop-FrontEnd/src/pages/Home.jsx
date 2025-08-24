@@ -24,7 +24,7 @@ export default function Home() {
       </div>
 
       <div className="relative z-10">
-        <Navbar text="TCUTTS" />
+        <Navbar text="TCUTSS" />
 
         {/* Hero */}
         <section className="px-6">
@@ -61,7 +61,7 @@ export default function Home() {
 
         {/* Footer */}
         <footer className="border-t border-white/10 py-6 text-center text-white/60 text-sm">
-          © {new Date().getFullYear()} TCUTTS • All rights reserved
+          © {new Date().getFullYear()} TCUTSS • All rights reserved
         </footer>
       </div>
     </div>

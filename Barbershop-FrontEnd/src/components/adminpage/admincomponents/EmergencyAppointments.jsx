@@ -337,12 +337,12 @@ function EmergencyRequestCard({ req, onChanged }) {
             if (isCancelling) return;
             setIsCancelling(true);
             const res = await fetch(
-              "http://localhost:3000/api/emergency/cancel-request",
+              "http://localhost:3000/api/emergency/cancel-emergency",
               {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                  requestId: req.request_id,
+                  requestId: req.request_id,   // OR send { email, date, time } if you prefer
                   email: req.email,
                   name: req.name,
                 }),

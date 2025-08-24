@@ -3,7 +3,7 @@ import { MdOutlineMarkEmailRead } from 'react-icons/md';
 import { TiTick } from 'react-icons/ti';
 import { RxCross1 } from 'react-icons/rx';
 import { useState, useEffect } from 'react';
-
+import { toast } from 'react-hot-toast'
 
 export default function ConfirmationPage() {
   const navigate = useNavigate();
@@ -110,6 +110,7 @@ export default function ConfirmationPage() {
           proposals,
           message: 'Emergency request submitted. We’ll confirm your time via email. Please check your email for the confirmation code.',
         },
+        replace: true,
       });
     } else {
       //normal booking
@@ -131,7 +132,13 @@ export default function ConfirmationPage() {
       if (payload.booking) {
         sessionStorage.setItem('booking', JSON.stringify(payload.booking));
       }
-      navigate('/confirmed', { state: payload.booking || { name, email, date, time, service } });
+      navigate(
+        '/confirmed',
+        {
+          state: payload.booking || { name, email, date, time, service },
+          replace: true,
+        }
+      );
     }
   };
 
@@ -145,6 +152,32 @@ export default function ConfirmationPage() {
       year: 'numeric',
     });
   };
+  const [resendDisabled, setResendDisabled] = useState(false);
+
+  const handleResendEmail = async () => {
+    try {
+      setResendDisabled(true); // disable immediately
+      const res = await fetch("http://localhost:3000/api/admin/resend-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, confirmationCode }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Failed to resend email");
+
+      setError("");
+      toast.success("Please check your inbox.");
+    } catch (err) {
+      console.error("❌ Error resending email:", err);
+      setError(err.message || "Could not resend email");
+    } finally {
+      // Re-enable after 10 seconds
+      setTimeout(() => setResendDisabled(false), 10000);
+    }
+  };
+
+
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-6">
       <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-8 w-full max-w-md">
@@ -172,7 +205,7 @@ export default function ConfirmationPage() {
                       key={`${p.date}-${p.time}-${i}`}
                       className="px-3 py-1 rounded-lg bg-white/10 border border-white/20 text-[#DDCA7D]"
                     >
-                      {fmtDate(p.date)} • {p.time}
+                      {fmtDate(p.date)} • {formatDisplayTime(p.time)}
                     </span>
                   ))}
                 </div>
@@ -185,7 +218,7 @@ export default function ConfirmationPage() {
             ) : (
               <p>
                 <span className="text-[#DDCA7D] font-bold">Booking:</span>{' '}
-                {date} @ {displayTime(time)}
+                {fmtDate(date)} @ {formatDisplayTime(time)}
               </p>
             )}
           </div>
@@ -210,14 +243,18 @@ export default function ConfirmationPage() {
 
           <button
             type="button"
-            className="bg-[#1c1808] text-[#DDCA7D] raleway-bold px-8 py-3 rounded-lg text-lg uppercase tracking-wide shadow-md hover:scale-105 transition-all flex items-center gap-2"
-            onClick={() => navigate('/booking')}
+            disabled={resendDisabled}
+            className={`bg-[#1c1808] text-[#DDCA7D] raleway-bold px-8 py-3 rounded-lg text-lg uppercase tracking-wide shadow-md hover:scale-105 transition-all flex items-center gap-2 ${resendDisabled ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            onClick={handleResendEmail}
           >
             <RxCross1 className="text-2xl" />
-            Didn’t get the email?
+            {resendDisabled ? "Please wait..." : "Didn't get it, resend?"}
           </button>
+
         </div>
       </div>
     </div>
   );
+
 }

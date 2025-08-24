@@ -9,18 +9,7 @@ function Navbar({ text }) {
         </div>
         <div className="flex items-center">
           <div className="flex gap-2">
-            <a
-              href="#about"
-              className="px-4 py-2 rounded-lg text-sm font-bold montserrat-navbar-btn bg-white/5 border border-white/15 text-white hover:bg-white/10"
-            >
-              About
-            </a>
-            <a
-              href="#contact"
-              className="px-4 py-2 rounded-lg text-sm font-bold montserrat-navbar-btn bg-white/5 border border-white/15 text-white hover:bg-white/10"
-            >
-              Contact
-            </a>
+
             <a
               href="/booking"
               className="hidden sm:inline-flex px-5 py-2 rounded-lg text-sm font-bold montserrat-navbar-btn bg-[#DDCA7D] text-black hover:brightness-95 shadow-sm"

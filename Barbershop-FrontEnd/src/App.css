@@ -68,3 +68,15 @@
     --rdp-shadow: 0 0 6px rgba(221, 202, 125, 0.4);
     --rdp-day-height: 42px;
 }
+/* Apply to the whole page */
+html, body {
+    overflow: -moz-scrollbars-none; /* Firefox */
+    -ms-overflow-style: none;      /* IE/Edge */
+    scrollbar-width: none;         /* Firefox */
+  }
+  
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+  

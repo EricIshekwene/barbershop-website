@@ -1,20 +1,12 @@
-/* scrollbar.css */
-::-webkit-scrollbar {
-    width: 8px; /* thin bar */
-  }
-  
-  ::-webkit-scrollbar-track {
-    background: #000; /* black track */
-    border-radius: 10px;
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background-color: #DDCA7D; /* your gold */
-    border-radius: 10px;
-    border: 2px solid #000; /* makes it blend in */
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: #f0d97d; /* lighter gold on hover */
-  }
-  
+.custom-scrollbar::-webkit-scrollbar {
+  width: 7px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #DDCA7D;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}

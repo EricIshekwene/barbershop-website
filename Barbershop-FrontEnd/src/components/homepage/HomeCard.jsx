@@ -21,7 +21,7 @@ export default function HomeCard() {
 
         {/* Centered overlay content */}
         <div className="relative z-10 h-full w-full flex flex-col items-center justify-center text-center px-6">
-          <h2 className="hurricane-regular text-4xl md:text-5xl text-white/90">TCUTTS</h2>
+          <h2 className="hurricane-regular text-4xl md:text-5xl text-white/90">TCUTSS</h2>
           <h1 className="raleway-bold text-[#DDCA7D] text-4xl md:text-5xl mt-2 tracking-tight">
             OSU&apos;s #1 Barber
           </h1>
@@ -29,14 +29,14 @@ export default function HomeCard() {
           <div className="mt-6 flex gap-8">
             <button
               className="group"
-              onClick={() => window.open("https://instagram.com/your-handle", "_blank")}
+              onClick={() => window.open("https://instagram.com/tcutss", "_blank")}
               aria-label="Instagram"
             >
               <FaInstagram className="text-white text-4xl md:text-5xl group-hover:scale-110 transition-transform" />
             </button>
             <button
               className="group"
-              onClick={() => window.open("https://tiktok.com/@your-handle", "_blank")}
+              onClick={() => window.open("https://www.tiktok.com/@tcutss_?_t=ZP-8z9D32jVKnP&_r=1", "_blank")}
               aria-label="Tiktok"
             >
               <FaTiktok className="text-white text-4xl md:text-5xl group-hover:scale-110 transition-transform" />

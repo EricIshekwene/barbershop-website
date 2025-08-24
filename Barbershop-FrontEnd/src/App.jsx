@@ -9,6 +9,7 @@ import AdminClients from './components/adminpage/AdminClients'
 import AdminLogin from './components/adminpage/AdminLogin'
 import Confirmed from './pages/Confirmed'
 import EmergencyConfirmed from './pages/EmergencyConfirmed'
+import NotFound from './pages/NotFound'
 
 function App() {
   return (
@@ -41,7 +42,8 @@ function App() {
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/confirmed" element={<Confirmed />} />
         <Route path="/emergency-confirmation" element={<EmergencyConfirmed />} />
-      </Routes>
+        <Route path="*" element={<NotFound />} />
+        </Routes>
     </>
   )
 }

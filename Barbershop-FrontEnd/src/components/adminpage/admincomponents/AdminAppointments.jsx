@@ -4,7 +4,7 @@ import UpcomingAppointment from './AdminSubcomponents/UpcomingAppointment';
 import PastAppointments from './AdminSubcomponents/PastAppointments';
 import '../../../scrollbar.css';
 
-export default function AdminAppointments() {
+export default function AdminAppointments({}) {
   const [showUpcomingAppointments, setShowUpcomingAppointments] = useState(true);
   const [showPastAppointments, setShowPastAppointments] = useState(false);
 
@@ -41,7 +41,20 @@ export default function AdminAppointments() {
     }
   }, []);
 
-  useEffect(() => { fetchAppointments(); }, [fetchAppointments]);
+  useEffect(() => {
+    let alive = true;
+    // optional: guard against setting state after unmount
+    (async () => {
+      try { await fetchAppointments(); } catch {}
+    })();
+    return () => { alive = false; };
+  }, [fetchAppointments]);
+
+  // 🔑 one callback that children can call after they mutate anything
+  //refresh appointments
+  const onChildChanged = useCallback(() => {
+    fetchAppointments();
+  }, [fetchAppointments]);
 
   // Helpers for search filtering
   const norm = (v) => (v ?? "").toString().toLowerCase();
