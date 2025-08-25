@@ -37,18 +37,12 @@ export default function Home() {
         </section>
 
 
-        {/* Gallery */}
-        <section className="px-4 mt-12">
-          <Headings text="Cuts that speak" subtext="A few recent favorites" />
-          <div className="mx-auto max-w-7xl">
-            <HaircutExample />
-          </div>
-        </section>
+       
 
         {/* Quote */}
         <section className="px-4 mt-6">
           <div className="mx-auto max-w-3xl">
-            <Subtext text="“Attention to detail is everything. Your cut should hit before you even say a word.”" />
+            <Subtext text="“Commit your works to the Lord, and your plans will be established”" />
           </div>
         </section>
 

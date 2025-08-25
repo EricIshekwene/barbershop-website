@@ -16,7 +16,7 @@ const HOST = '0.0.0.0';
 
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json()); 
-app.use(cookieParser());
+
 // Register route module
 app.use('/api/admin', adminLoginRoutes);  // Base path for admin routes
 app.use('/api/admin', availabilityRoutes);  // Base path for admin routes
