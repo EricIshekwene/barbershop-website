@@ -59,7 +59,12 @@ function BookingCalendar({ setDate, setTime }) {
   const availableSlots = selectedDay
     ? selectedDay.timeslots.filter((t) => t.status === 'available')
     : [];
-
+    const formatTo12Hour = (hour) => {
+      const h = Number(hour);
+      const period = h >= 12 ? "PM" : "AM";
+      const h12 = h % 12 === 0 ? 12 : h % 12;
+      return `${h12}:00 ${period}`;
+    };
   return (
     <div className="flex justify-center m-8">
       <div className="rounded-lg border flex flex-col items-center border-white/20 w-80 sm:w-96 p-4 bg-white/10 ring-4">
@@ -117,14 +122,14 @@ function BookingCalendar({ setDate, setTime }) {
                           setTime(time);
                         }}
                       >
-                        {String(time).padStart(2, '0')}:00
+                        {formatTo12Hour(time)}
                       </button>
                     );
                   }
                   if (status === 'booked') {
                     return (
                       <span key={time} className={UnavailableVerifiedTimeslotsStyle} title="Booked">
-                        {String(time).padStart(2, '0')}:00 • Booked
+                        {formatTo12Hour(time)} • Booked
                       </span>
                     );
                   }

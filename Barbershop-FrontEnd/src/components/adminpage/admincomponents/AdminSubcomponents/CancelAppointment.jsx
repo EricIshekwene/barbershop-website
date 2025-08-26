@@ -61,6 +61,7 @@ export default function CancelAppointment({ name, date, time, closeModal, email,
         const res = await fetch(`http://localhost:3000/api/admin/cancel-appointment`, {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify({ name, email, date, time, service }),
         });
         const data = await res.json().catch(() => ({}));

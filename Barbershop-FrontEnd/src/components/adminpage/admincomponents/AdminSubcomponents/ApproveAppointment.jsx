@@ -38,6 +38,7 @@ const [error, setError] = useState("");
         const res = await fetch(`http://localhost:3000/api/admin/approve-appointment`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify({ name, email, date, time, service }), // 👈 include email
         });
   

@@ -26,6 +26,7 @@ export default function AdminAppointments({}) {
     try {
       const res = await fetch("http://localhost:3000/api/admin/appointments", {
         headers: { Accept: "application/json" },
+        credentials: 'include',
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));

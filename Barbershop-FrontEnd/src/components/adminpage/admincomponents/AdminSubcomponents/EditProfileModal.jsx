@@ -55,6 +55,7 @@ export default function EditProfileModal({ closeModal, client: initialClient, on
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
       });
       if (!response.ok) {
         throw new Error("Failed to update client");

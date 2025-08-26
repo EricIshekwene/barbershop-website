@@ -15,6 +15,8 @@ export default function BookingForm({ service, date, time, emergency }) {
     const [formError, setFormError] = useState('');
     const [reason, setReason] = useState('');
     const [reasonError, setReasonError] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     function validateForm({ name, email, phone, instagram, time, date, service, reason, emergency }, setErrors) {
         let hasError = false;
 
@@ -113,6 +115,10 @@ export default function BookingForm({ service, date, time, emergency }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
+        setTimeout(() => {
+            setIsSubmitting(false);
+        }, 3000);
         let confirmationCode;
         console.log("handleSubmit hit");
         const isValid = validateForm(
@@ -337,22 +343,29 @@ export default function BookingForm({ service, date, time, emergency }) {
                     </p>
                 )}
                 {service === 'Emergency Cut' && (
-                <>
-                    <input
-                        type="text"
-                        placeholder="Reason for emergency cut"
-                        value={reason}
-                        onChange={e => setReason(e.target.value)}
-                        className="raleway-regular w-full p-2 rounded-md border-white/20 text-[#DDCA7D] backdrop-blur-sm focus:outline-none focus:ring-0"
-                    />
-                    {reasonError && (
-                        <p className="text-red-500 raleway-regular text-left text-sm font-bold">
-                            {reasonError}
-                        </p>
-                    )}
-                </>
-)}
-                <button type="submit" className="w-full p-2 m-2  raleway-regular rounded-md  border-white/20 text-[#DDCA7D]  backdrop-blur-sm">Submit</button>
+                    <>
+                        <input
+                            type="text"
+                            placeholder="Reason for emergency cut"
+                            value={reason}
+                            onChange={e => setReason(e.target.value)}
+                            className="raleway-regular w-full p-2 rounded-md border-white/20 text-[#DDCA7D] backdrop-blur-sm focus:outline-none focus:ring-0"
+                        />
+                        {reasonError && (
+                            <p className="text-red-500 raleway-regular text-left text-sm font-bold">
+                                {reasonError}
+                            </p>
+                        )}
+                    </>
+                )}
+                <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={`w-full p-2 m-2 raleway-regular rounded-md border-white/20 text-[#DDCA7D] backdrop-blur-sm
+            ${isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-white/10"}`}
+                >
+                    {isSubmitting ? "Please wait..." : "Submit"}
+                </button>
             </form>
         </div>
     )

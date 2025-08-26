@@ -7,6 +7,7 @@ import ConfirmationPage from './pages/ConfirmationPage'
 import AdminHome from './components/adminpage/AdminHome'
 import AdminClients from './components/adminpage/AdminClients'
 import AdminLogin from './components/adminpage/AdminLogin'
+import ProtectedRoute from './components/adminpage/ProtectedRoute'
 import Confirmed from './pages/Confirmed'
 import EmergencyConfirmed from './pages/EmergencyConfirmed'
 import NotFound from './pages/NotFound'
@@ -37,8 +38,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/booking" element={<BookingPage />} />
         <Route path="/confirmation" element={<ConfirmationPage />} />
-        <Route path="/admin" element={<AdminHome />} />
-        <Route path="/admin/clients" element={<AdminClients />} />
+        <Route path="/admin" element={<ProtectedRoute><AdminHome /></ProtectedRoute>} />
+        <Route path="/admin/clients" element={<ProtectedRoute><AdminClients /></ProtectedRoute>} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/confirmed" element={<Confirmed />} />
         <Route path="/emergency-confirmation" element={<EmergencyConfirmed />} />

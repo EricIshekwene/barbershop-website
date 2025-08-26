@@ -86,12 +86,27 @@ router.post('/mail-request', async (req, res) => {
       `;
   
       await transporter.sendMail({
-        from: `"Barbershop" <${process.env.EMAIL_USER}>`,
+        from: `"TCUTSS BARBERSHOP" <${process.env.EMAIL_USER}>`,
         to: email, // 📩 notify client
         subject,
         html: htmlBody,
       });
-  
+      
+      await transporter.sendMail({
+        from: `"TCUTSS BARBERSHOP" <${process.env.EMAIL_USER}>`,
+        to: "tcutssinc@gmail.com", 
+        subject: `🚨 New Emergency Cut Request from ${name}`,
+        html: `
+          <h2>New Emergency Cut Request Received</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          ${reason ? `<p><strong>Reason:</strong> ${reason}</p>` : ""}
+          <p><strong>Proposed Times:</strong></p>
+          <ul>${slotList || "<li>No times provided</li>"}</ul>
+          <hr/>
+          <p>- TCUTSS System</p>
+        `,
+      });
       return res.status(200).json({ message: "Emergency request email sent to client" });
     } catch (err) {
       console.error("❌ Error sending emergency request email:", err);
@@ -244,7 +259,7 @@ router.patch('/cancel-emergency', async (req, res) => {
     // 5) Send email (best-effort)
     try {
       await transporter.sendMail({
-        from: `"Barbershop" <${process.env.EMAIL_USER}>`,
+        from: `"TCUTSS BARBERSHOP" <${process.env.EMAIL_USER}>`,
         to: email,
         subject: "Emergency request update",
         html: `<p>Hi ${name || "there"},</p>
@@ -373,7 +388,7 @@ router.patch('/cancel-emergency', async (req, res) => {
 
     // send email
     await transporter.sendMail({
-      from: `"Barbershop" <${process.env.EMAIL_USER}>`,
+      from: `"TCUTSS BARBERSHOP" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: "Emergency request update",
       html: `<p>Hi ${name || "there"},</p>

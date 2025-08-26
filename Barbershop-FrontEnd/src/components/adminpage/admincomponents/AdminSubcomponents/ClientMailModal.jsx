@@ -28,6 +28,7 @@ export default function ClientMailModal({ closeModal }) {
       const res = await fetch('http://localhost:3000/api/admin/mail-all-clients', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ subject, message }),
       });
 

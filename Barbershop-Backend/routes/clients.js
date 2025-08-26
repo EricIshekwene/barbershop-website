@@ -66,7 +66,7 @@ router.post('/mail-client', async (req, res) => {
       return res.status(400).json({ error: 'Invalid email format' });
     }
     const info = await transporter.sendMail({
-      from: `"TCUTT BARBERSHOP" <${process.env.EMAIL_USER}>`,
+      from: `"TCUTSS BARBERSHOP" <${process.env.EMAIL_USER}>`,
       to: email,
       subject,
       text: message,
@@ -112,7 +112,7 @@ router.post('/mail-all-clients', async (req, res) => {
     }
 
     const html = `<p>${message}</p>`; // simple HTML
-    const from = `"TCUTT BARBERSHOP" <${process.env.EMAIL_USER}>`;
+    const from = `"TCUTSS BARBERSHOP" <${process.env.EMAIL_USER}>`;
 
     const results = [];
     for (const group of chunks) {
@@ -186,7 +186,7 @@ router.patch('/approve-appointment', async (req, res) => {
       const message = `Hi ${name},\n\nYour appointment for "${service}" on ${prettyDate} at ${prettyTime} has been approved.\n\nWe look forward to seeing you!\n\n- Barbershop`;
 
       await transporter.sendMail({
-        from: `"Barbershop" <${process.env.EMAIL_USER}>`,
+        from: `"TCUTSS BARBERSHOP" <${process.env.EMAIL_USER}>`,
         to: email,
         subject,
         text: message,
@@ -257,7 +257,7 @@ router.delete('/cancel-appointment', async (req, res) => {
       const message = `Hi ${name},\n\nYour appointment for "${service}" on ${prettyDate} at ${prettyTime} has been cancelled.\n\nIf this was a mistake, please reschedule.\n\n- Barbershop`;
 
       await transporter.sendMail({
-        from: `"Barbershop" <${process.env.EMAIL_USER}>`,
+        from: `"TCUTSS BARBERSHOP" <${process.env.EMAIL_USER}>`,
         to: email,
         subject,
         text: message,
@@ -355,7 +355,7 @@ router.post('/resend-email', async (req, res) => {
 
   try {
     await transporter.sendMail({
-      from: `"Barbershop" <${process.env.EMAIL_USER}>`,
+      from: `"TCUTSS BARBERSHOP" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: "Your Confirmation Code",
       html: `<p>Hi ${name || "there"},</p>

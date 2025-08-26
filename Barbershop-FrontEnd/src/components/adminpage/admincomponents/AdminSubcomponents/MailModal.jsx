@@ -65,6 +65,7 @@ export default function MailModal({ name, email, closeModal, date, time, service
       const res = await fetch(`http://localhost:3000/api/admin/mail-client`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ email, subject, message }),
       });
       const data = await res.json().catch(() => ({}));

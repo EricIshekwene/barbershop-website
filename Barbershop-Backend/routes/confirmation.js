@@ -145,7 +145,7 @@ router.post('/add-booking', async (req, res) => {
   SELECT 1
   FROM appointments
   WHERE client_id = $1
-    AND status <> 'cancelled'
+    AND COALESCE(LOWER(status), '') NOT IN ('cancelled','canceled')
     AND daterange(appointment_date, appointment_date + 3, '[)')
         && daterange($2::date, $2::date + 3, '[)')
   LIMIT 1
@@ -167,7 +167,27 @@ router.post('/add-booking', async (req, res) => {
          RETURNING *`,
       [clientId, service, date, pgTime, bookingStatus]
     );
-
+    await transporter.sendMail({
+      from: `"TCUTSS BARBERSHOP" <${process.env.EMAIL_USER}>`,
+      to: "tcutssinc@gmail.com",   // your own email
+      subject: "New Booking Added",
+      text: `A new booking has been added:\n\n
+    Name: ${name}
+    Email: ${email}
+    Service: ${service}
+    Date: ${date}
+    Time: ${time}\n\n- TCUTSS System`,
+      html: `
+        <h2>New Booking Alert</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Service:</strong> ${service}</p>
+        <p><strong>Date:</strong> ${date}</p>
+        <p><strong>Time:</strong> ${time}</p>
+        <hr/>
+        <p>- TCUTSS System</p>
+      `,
+    });
     return res.status(201).json({
       message: "Booking added successfully",
       booking: bookingResult.rows[0]

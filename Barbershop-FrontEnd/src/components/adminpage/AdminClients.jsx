@@ -37,6 +37,7 @@ export default function AdminClients({}) {
     try {
       const res = await fetch('http://localhost:3000/api/admin/verified-clients', {
         headers: { Accept: 'application/json' },
+        credentials: 'include',
       });
 
       const contentType = res.headers.get('content-type') || '';
@@ -134,7 +135,7 @@ export default function AdminClients({}) {
 
         {/* Rows container */}
         {showClients && (
-          <div className="max-h-50 overflow-y-auto space-y-2 pr-1">
+          <div className="max-h-50 custom-scrollbar overflow-y-auto space-y-2 pr-1">
             {total === 0 ? (
               <p className="text-white/60 italic px-1">No clients yet.</p>
             ) : shown ? (

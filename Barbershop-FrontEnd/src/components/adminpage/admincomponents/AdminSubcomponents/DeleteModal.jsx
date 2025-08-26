@@ -22,6 +22,7 @@ export default function DeleteModal({ client, closeModal, onDeleteSuccess }) {
       const res = await fetch('http://localhost:3000/api/admin/delete-client', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ client }),
       });
 

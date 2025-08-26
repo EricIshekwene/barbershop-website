@@ -21,7 +21,7 @@ export default function DashboardStats({
       try {
         const res = await fetch(
           `${fetchUrl}?windowDays=7&goal=${encodeURIComponent(cutsGoal)}`,
-          { headers: { Accept: "application/json" } }
+          { headers: { Accept: "application/json" }, credentials: 'include' }
         );
         const body = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(body.error || `HTTP ${res.status}`);

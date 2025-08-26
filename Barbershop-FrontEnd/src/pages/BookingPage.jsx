@@ -30,7 +30,7 @@ function BookingPage() {
         <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
           <div className="mt-6">
             <BookingCard
-              text="Low Taper"
+              text="Regular Cut"
               price="$30"
               text2="Emergency Cut"
               price2="$50"

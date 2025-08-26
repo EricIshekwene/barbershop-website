@@ -7,7 +7,7 @@ import HaircutExample from "../components/homepage/HaircutExample";
 import Subtext from "../components/homepage/subtext";
 import ContactCard from "../components/homepage/ContactCard";
 import BookYourAppointment from "../components/homepage/BookYourAppointment";
-
+import Payment from "../components/homepage/Payment";
 export default function Home() {
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
@@ -32,27 +32,28 @@ export default function Home() {
         </section>
 
         {/* CTA */}
-        <section className="px-4 mt-10">
+        <section className="px-4 mt-10 mb-15">
           <BookYourAppointment />
         </section>
 
-
-       
-
-        {/* Quote */}
-        <section className="px-4 mt-6">
-          <div className="mx-auto max-w-3xl">
-            <Subtext text="“Commit your works to the Lord, and your plans will be established”" />
-          </div>
+        {/* Payment */}
+        <section className="px-4 mt-5">
+          <Payment />
         </section>
 
+
         {/* Contact */}
-        <section className="px-4 mt-8 pb-16">
+        <section className="px-4 mt-8 pb-8">
           <div className="mx-auto max-w-6xl">
             <ContactCard />
           </div>
         </section>
-
+        {/* Quote */}
+        <section className="px-4 mt-6 mb-3">
+          <div className="mx-auto max-w-3xl">
+            <Subtext text="“Commit your works to the Lord, and your plans will be established”" />
+          </div>
+        </section>
         {/* Footer */}
         <footer className="border-t border-white/10 py-6 text-center text-white/60 text-sm">
           © {new Date().getFullYear()} TCUTSS • All rights reserved
